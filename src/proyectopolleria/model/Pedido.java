@@ -1,74 +1,65 @@
-
 package proyectopolleria.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 public class Pedido {
-    private String idPedido;
+
+    private Integer id;
     private Cliente cliente;
-    private Mozo mozo;
-    private LocalDateTime fecha;
-    private String estado;
+    private Trabajador MOZO;
+    private Trabajador DELIVERY;
+    private LocalDateTime fechaHora;
+    private String tipo;
     private List<Orden> ordenes;
+    private double total;
 
-    public Pedido(String idPedido, Cliente cliente, Mozo mozo, LocalDateTime fecha, String estado, List<Orden> ordenes) {
-        this.idPedido = idPedido;
+    public Pedido() {
+    }
+
+    public Pedido(Cliente cliente, Trabajador trabajador, String tipo, List<Orden> ordenes) {
         this.cliente = cliente;
-        this.mozo = mozo;
-        this.fecha = fecha;
-        this.estado = estado;
+        this.tipo = tipo.toUpperCase();
+        this.fechaHora = LocalDateTime.now();
         this.ordenes = ordenes;
+
+        if (this.tipo.equals("SALON")) {
+            this.MOZO = trabajador;
+            this.DELIVERY = null;
+        } else if (this.tipo.equals("")) {
+            this.MOZO = null;
+            this.DELIVERY = trabajador;
+        } else {
+            throw new IllegalArgumentException("Tipo de pedido inválido: " + tipo);
+        }
     }
 
-    public String getIdPedido() {
-        return idPedido;
-    }
-
-    public void setIdPedido(String idPedido) {
-        this.idPedido = idPedido;
+    public Integer getId() {
+        return id;
     }
 
     public Cliente getCliente() {
         return cliente;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public Trabajador getMOZO() {
+        return MOZO;
     }
 
-    public Mozo getMozo() {
-        return mozo;
+    public Trabajador getDELIVERY() {
+        return DELIVERY;
     }
 
-    public void setMozo(Mozo mozo) {
-        this.mozo = mozo;
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
     }
 
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public String getTipo() {
+        return tipo;
     }
 
     public List<Orden> getOrdenes() {
         return ordenes;
     }
 
-    public void setOrdenes(List<Orden> ordenes) {
-        this.ordenes = ordenes;
-    }
-    
-    
 }

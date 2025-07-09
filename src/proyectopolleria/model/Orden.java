@@ -1,9 +1,8 @@
+
 package proyectopolleria.model;
 
 public class Orden {
-
-    private int idOrden;
-    private Pedido pedido;
+    private Integer id;
     private Producto producto;
     private int cantidad;
     private double subtotal;
@@ -11,28 +10,21 @@ public class Orden {
     public Orden() {
     }
 
-    public Orden(int idOrden, Pedido pedido, Producto producto, int cantidad, double subtotal) {
-        this.idOrden = idOrden;
-        this.pedido = pedido;
+    public Orden(Producto producto, int cantidad, double subtotal) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.subtotal = cantidad*producto.getPrecio();
+    }
+
+    public Orden(Integer id, Producto producto, int cantidad, double subtotal) {
+        this.id = id;
         this.producto = producto;
         this.cantidad = cantidad;
         this.subtotal = subtotal;
     }
 
-    public int getIdOrden() {
-        return idOrden;
-    }
-
-    public void setIdOrden(int idOrden) {
-        this.idOrden = idOrden;
-    }
-
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public Integer getId() {
+        return id;
     }
 
     public Producto getProducto() {
@@ -58,5 +50,6 @@ public class Orden {
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }
-
+    
+    
 }

@@ -1,49 +1,36 @@
 package proyectopolleria.model;
 
-public class Cliente {
+public class Proveedor {
 
     private Integer id;
-    private String dni;
     private String nombre;
+    private String ruc;
     private String telefono;
     private String direccion;
-    private String referencia;
+    private String correo;
 
-    public Cliente() {
+    public Proveedor() {
     }
 
-    public Cliente(String dni, String nombre) {
-        this.dni = dni;
+    public Proveedor(String nombre, String ruc, String telefono, String direccion, String correo) {
         this.nombre = nombre;
-    }
-
-    public Cliente(String dni, String nombre, String telefono, String direccion, String referencia) {
-        this.dni = dni;
-        this.nombre = nombre;
+        this.ruc = ruc;
         this.telefono = telefono;
         this.direccion = direccion;
-        this.referencia = referencia;
+        this.correo = correo;
     }
 
-    public Cliente(Integer id, String dni, String nombre, String telefono, String direccion, String referencia) {
+    public Proveedor(Integer id, String nombre, String ruc, String telefono, String direccion, String correo) {
         this.id = id;
-        this.dni = dni;
         this.nombre = nombre;
+        this.ruc = ruc;
         this.telefono = telefono;
         this.direccion = direccion;
-        this.referencia = referencia;
+        this.correo = correo;
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public String getDni() {
-        return dni;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
     }
 
     public String getNombre() {
@@ -52,6 +39,14 @@ public class Cliente {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getRuc() {
+        return ruc;
+    }
+
+    public void setRuc(String ruc) {
+        this.ruc = ruc;
     }
 
     public String getTelefono() {
@@ -70,12 +65,12 @@ public class Cliente {
         this.direccion = direccion;
     }
 
-    public String getReferencia() {
-        return referencia;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setReferencia(String referencia) {
-        this.referencia = referencia;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
 }

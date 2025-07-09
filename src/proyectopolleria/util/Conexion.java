@@ -3,6 +3,7 @@ package proyectopolleria.util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 public class Conexion {
 
@@ -32,4 +33,17 @@ public class Conexion {
     public Connection getConexion(){
     return con;
     };
+    
+    public static void desconectar(){
+    if(instancia!=null && instancia.con!=null){
+        try {
+            instancia.con.close();
+            instancia.con=null;
+            instancia=null;
+            JOptionPane.showMessageDialog(null, "Conexion Cerrada");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Error al cerrar la conexión: "+e);
+        }
+    }
+    }
 }

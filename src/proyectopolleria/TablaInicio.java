@@ -15,7 +15,7 @@ public class TablaInicio extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         cargarUsuariosDesdeCSV();
-        autenticador.agregarUsuario("admin", "admin01");
+        autenticador.agregarUsuario("user", "admin01");
     }
     private void cargarUsuariosDesdeCSV() {
         // Llamar a la clase GestionDatosUsuario para cargar usuarios desde el archivo CSV

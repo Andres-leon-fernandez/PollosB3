@@ -1,44 +1,44 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyectopolleria.model;
 
-/**
- *
- * @author andres
- */
 public class Producto {
 
-    private int idProducto;
-    private String nombre;
+    private Integer id;
+    private String descripcion;
     private double precio;
-    private CategoriaProducto categoria;
+    private String categoria;
+    private boolean activo;
 
     public Producto() {
     }
 
-    public Producto(int idProducto, String nombre, double precio, CategoriaProducto categoria) {
-        this.idProducto = idProducto;
-        this.nombre = nombre;
+    public Producto(String descripcion, double precio, String categoria) {
+        this.descripcion = descripcion;
         this.precio = precio;
         this.categoria = categoria;
+        this.activo = true;
     }
 
-    public int getIdProducto() {
-        return idProducto;
+    public Producto(Integer id, String descripcion, double precio, String categoria, boolean activo) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.categoria = categoria;
+        this.activo = activo;
     }
 
-    public void setIdProducto(int idProducto) {
-        this.idProducto = idProducto;
+    public Integer getId() {
+        return id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setDescripcion(String descripcion) {
+        if (descripcion == null || descripcion.trim().isEmpty()) {
+        throw new IllegalArgumentException("La descripción no puede estar vacía.");
+    }
+        this.descripcion = descripcion;
     }
 
     public double getPrecio() {
@@ -46,15 +46,22 @@ public class Producto {
     }
 
     public void setPrecio(double precio) {
+        if (precio < 0) {
+        throw new IllegalArgumentException("El precio no puede ser negativo.");
+    }
         this.precio = precio;
     }
 
-    public CategoriaProducto getCategoria() {
+    public String getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(CategoriaProducto categoria) {
-        this.categoria = categoria;
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
 }
