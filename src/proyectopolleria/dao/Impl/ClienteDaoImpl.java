@@ -60,9 +60,10 @@ public class ClienteDaoImpl implements ClienteDao {
             stat.setString(3, t.getTelefono());
             stat.setString(4, t.getDireccion());
             stat.setString(5, t.getReferencia());
+            stat.setInt(6, t.getId());
 
             if (stat.executeUpdate() == 0) {
-                throw new DaoException("error al modificar"); 
+                throw new DaoException("error al modificar");
             }
         } catch (SQLException ex) {
             throw new DaoException("error en sql", ex);
@@ -137,7 +138,7 @@ public class ClienteDaoImpl implements ClienteDao {
                 try {
                     stat.close();
                 } catch (SQLException ex) {
-                    new DaoException("error en sql", ex);
+                    throw new DaoException("error en sql", ex);
                 }
             }
         }
@@ -165,14 +166,14 @@ public class ClienteDaoImpl implements ClienteDao {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    new DaoException("error en sql", ex);
+                    throw new DaoException("error en sql", ex);
                 }
             }
             if (stat != null) {
                 try {
                     stat.close();
                 } catch (SQLException ex) {
-                    new DaoException("error en sql", ex);
+                    throw new DaoException("error en sql", ex);
                 }
             }
         }

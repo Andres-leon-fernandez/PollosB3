@@ -1,6 +1,6 @@
 package proyectopolleria.util;
 
-import proyectopolleria.model.Mozo;
+import proyectopolleria.model.previos.Mozo;
 import java.util.ArrayList;
 import java.util.List;
 

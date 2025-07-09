@@ -24,7 +24,7 @@ public class Insumo {
         this.nombre = nombre;
         this.stock = stock;
         this.stockMin = stockMin;
-        this.disponible=true;
+        this.disponible = true;
         this.unidad = unidad;
         this.precioUnitario = precioUnitario;
         this.proveedor = proveedor;
@@ -39,6 +39,18 @@ public class Insumo {
         this.unidad = unidad;
         this.precioUnitario = precioUnitario;
         this.proveedor = proveedor;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setUnidad(Unidad unidad) {
+        this.unidad = unidad;
     }
 
     public Integer getId() {
@@ -93,6 +105,4 @@ public class Insumo {
         this.proveedor = proveedor;
     }
 
-    
-    
 }

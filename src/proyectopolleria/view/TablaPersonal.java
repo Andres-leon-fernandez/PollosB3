@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import proyectopolleria.util.ArbolBusquedaBinaria;
 import proyectopolleria.controller.GestionDatosMozo;
-import proyectopolleria.model.Mozo;
+import proyectopolleria.model.previos.Mozo;
 
 public class TablaPersonal extends javax.swing.JFrame {
 

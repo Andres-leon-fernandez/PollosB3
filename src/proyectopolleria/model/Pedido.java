@@ -26,12 +26,48 @@ public class Pedido {
         if (this.tipo.equals("SALON")) {
             this.MOZO = trabajador;
             this.DELIVERY = null;
-        } else if (this.tipo.equals("")) {
+        } else if (this.tipo.equals("DELIVERY")) {
             this.MOZO = null;
             this.DELIVERY = trabajador;
         } else {
             throw new IllegalArgumentException("Tipo de pedido inválido: " + tipo);
         }
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public void setMOZO(Trabajador MOZO) {
+        this.MOZO = MOZO;
+    }
+
+    public void setDELIVERY(Trabajador DELIVERY) {
+        this.DELIVERY = DELIVERY;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setOrdenes(List<Orden> ordenes) {
+        this.ordenes = ordenes;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public double getTotal() {
+        return total;
     }
 
     public Integer getId() {

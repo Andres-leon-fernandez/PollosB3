@@ -1,8 +1,7 @@
 package proyectopolleria.controller;
 import proyectopolleria.util.MenuPolleria;
-import proyectopolleria.model.Empleado;
 import java.util.List;
-import proyectopolleria.model.Empleado;
+import proyectopolleria.model.previos.Empleado;
 
 public class RestaurantePolloBrasa {
     private String nombre;

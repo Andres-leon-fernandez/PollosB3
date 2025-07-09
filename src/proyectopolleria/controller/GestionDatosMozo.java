@@ -1,6 +1,6 @@
 package proyectopolleria.controller;
 
-import proyectopolleria.model.Mozo;
+import proyectopolleria.model.previos.Mozo;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import proyectopolleria.model.Mozo;
+import proyectopolleria.model.previos.Mozo;
 
 public class GestionDatosMozo {
     private static final String CSV_FILE = "mozos.csv";

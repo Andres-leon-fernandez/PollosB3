@@ -1,6 +1,6 @@
 package proyectopolleria.seguridad;
 
-import proyectopolleria.model.Usuario;
+import proyectopolleria.model.previos.Usuario;
 import java.util.HashMap;
 import java.util.Map;
 

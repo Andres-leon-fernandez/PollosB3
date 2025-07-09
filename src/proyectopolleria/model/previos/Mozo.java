@@ -1,4 +1,4 @@
-package proyectopolleria.model;
+package proyectopolleria.model.previos;
 
 public class Mozo {
     private String apellidos;

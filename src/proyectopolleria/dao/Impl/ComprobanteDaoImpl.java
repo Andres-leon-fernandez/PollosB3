@@ -5,8 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.dao.interfaces.ComprobanteDao;
 import proyectopolleria.model.Comprobante;
@@ -20,11 +22,14 @@ import proyectopolleria.dao.interfaces.PedidoDao;
 public class ComprobanteDaoImpl implements ComprobanteDao {
 
     private Connection conn;
+    private PedidoDao pedidoDao;
 
-    public ComprobanteDaoImpl(Connection conn) {
+    public ComprobanteDaoImpl(Connection conn, PedidoDao pedidoDao) {
         this.conn = conn;
+        this.pedidoDao = pedidoDao;
     }
 
+    /*cambiar las consultas y los campos uwu*/
     static final String INSERT = "INSERT INTO comprobante(pedido_id, fecha_hora, total, tipo_comprobante, metodo_pago) VALUES (?, ?, ?, ?, ?)";
     //static final String UPDATE = "UPDATE comprobante SET pedido_id = ?, fecha_hora = ?, total = ?, tipo_comprobante = ?, metodo_pago = ? WHERE id = ?";
     static final String DELETE = "DELETE FROM comprobante WHERE id = ?";
@@ -87,28 +92,84 @@ public class ComprobanteDaoImpl implements ComprobanteDao {
     }
 
     private Comprobante convertidor(ResultSet rs) throws SQLException, DaoException {
-        // Fetch Pedido first
         int pedidoId = rs.getInt("pedido_id");
-        Pedido pedido = 
+        Pedido pedido = pedidoDao.obtener(pedidoId);
+        return new Comprobante(rs.getInt("id"),
+                pedido,
+                rs.getTimestamp("fecha_hora").toLocalDateTime(),
+                rs.getDouble("total"),
+                rs.getString("tipo_comprobante"),
+                rs.getString("metodo_pago"));
+    }
 
-        // Get other fields
-        int id = rs.getInt("id");
-        LocalDateTime fechaHora = rs.getTimestamp("fecha_hora").toLocalDateTime();
-        double total = rs.getDouble("total");
-        String tipoComprobante = rs.getString("tipo_comprobante");
-        String metodoPago = rs.getString("metodo_pago");
-
-        return new Comprobante(id, pedido, fechaHora, total, tipoComprobante, metodoPago);
+    private void cerrarRecursos(ResultSet rs, PreparedStatement stat) throws DaoException {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stat != null) {
+                stat.close();
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("Error cerrando recursos", ex);
+        }
     }
 
     @Override
     public List<Comprobante> listarTodos() throws DaoException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        List<Comprobante> comprobantes = new ArrayList<>();
+        try {
+            stat = conn.prepareStatement(SELECTALL);
+            rs = stat.executeQuery();
+            Map<Integer, Pedido> cachepedido = new HashMap<>();
+            while (rs.next()) {
+                int pedidoId = rs.getInt("pedido_id");
+                Pedido pedido = cachepedido.get(pedidoId);
+
+                if (pedido == null) {
+                    pedido = pedidoDao.obtener(pedidoId);
+                    cachepedido.put(pedidoId, pedido);
+                }
+                Comprobante comprobante = new Comprobante(
+                        rs.getInt("id"),
+                        pedido,
+                        rs.getTimestamp("fecha_hora").toLocalDateTime(),
+                        rs.getDouble("total"),
+                        rs.getString("tipo_comprobante"),
+                        rs.getString("metodo_pago")
+                );
+                comprobantes.add(comprobante);
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("error en sql", ex);
+        } finally {
+            cerrarRecursos(rs, stat);
+        }
+        return comprobantes;
     }
 
     @Override
     public Comprobante obtener(Integer id) throws DaoException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        try {
+            stat = conn.prepareStatement(SELECTID);
+            stat.setInt(1, id);
+            rs = stat.executeQuery();
+
+            if (rs.next()) {
+                return convertidor(rs);
+            } else {
+                throw new DaoException("error en sql");
+            }
+
+        } catch (SQLException ex) {
+            throw new DaoException("sql error: " + ex);
+        } finally {
+            cerrarRecursos(rs, stat);
+        }
     }
 
 }

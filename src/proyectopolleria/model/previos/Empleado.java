@@ -1,12 +1,13 @@
-package proyectopolleria.model;
+package proyectopolleria.model.previos;
 
 public class Empleado {
+
     public enum TipoEmpleado {
         MOZO,
         COCINA,
         CAJA
     }
-    
+
     private String idEmpleado;
     private String nombreEmpleado;
     private TipoEmpleado tipo;
@@ -17,20 +18,32 @@ public class Empleado {
         this.tipo = tipo;
     }
 
-    public String getIdEmpleado() { return idEmpleado; }
-    public void setIdEmpleado(String idEmpleado) { this.idEmpleado = idEmpleado; }
+    public String getIdEmpleado() {
+        return idEmpleado;
+    }
 
-    public String getNombreEmpleado() { return nombreEmpleado; }
-    public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }
+    public void setIdEmpleado(String idEmpleado) {
+        this.idEmpleado = idEmpleado;
+    }
 
-    public TipoEmpleado getTipo() { return tipo; }
-    public void setTipo(TipoEmpleado tipo) { this.tipo = tipo; }
+    public String getNombreEmpleado() {
+        return nombreEmpleado;
+    }
+
+    public void setNombreEmpleado(String nombreEmpleado) {
+        this.nombreEmpleado = nombreEmpleado;
+    }
+
+    public TipoEmpleado getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoEmpleado tipo) {
+        this.tipo = tipo;
+    }
 
     @Override
     public String toString() {
         return "Empleado [ID: " + idEmpleado + ", Nombre: " + nombreEmpleado + ", Tipo: " + tipo + "]";
     }
 }
-
-
-

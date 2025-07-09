@@ -1,6 +1,7 @@
-package proyectopolleria.model;
+package proyectopolleria.model.previos;
 
 public class Usuario {
+
     private String id;
     private String password;
 
@@ -16,5 +17,5 @@ public class Usuario {
     public String getPassword() {
         return password;
     }
-    
+
 }
