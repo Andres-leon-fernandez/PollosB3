@@ -16,30 +16,30 @@ public class Pedido {
     private Integer idDELIVERY;
     private LocalDateTime fechaHora;
     private tipoPedido tipo;
-    private List<Orden> ordenes;
+    private List<Integer> idOrdenes;
     private double total;
 
     public Pedido() {
     }
 
-    public Pedido(Integer idCliente, Integer idMOZO, Integer idDELIVERY, LocalDateTime fechaHora, tipoPedido tipo, List<Orden> ordenes, double total) {
+    public Pedido(Integer idCliente, Integer idMOZO, Integer idDELIVERY, LocalDateTime fechaHora, tipoPedido tipo, List<Integer> idOrdenes, double total) {
         this.idCliente = idCliente;
         this.idMOZO = idMOZO;
         this.idDELIVERY = idDELIVERY;
         this.fechaHora = fechaHora;
         this.tipo = tipo;
-        this.ordenes = ordenes;
+        this.idOrdenes = idOrdenes;
         this.total = total;
     }
 
-    public Pedido(Integer id, Integer idCliente, Integer idMOZO, Integer idDELIVERY, LocalDateTime fechaHora, tipoPedido tipo, List<Orden> ordenes, double total) {
+    public Pedido(Integer id, Integer idCliente, Integer idMOZO, Integer idDELIVERY, LocalDateTime fechaHora, tipoPedido tipo, List<Integer> idOrdenes, double total) {
         this.id = id;
         this.idCliente = idCliente;
         this.idMOZO = idMOZO;
         this.idDELIVERY = idDELIVERY;
         this.fechaHora = fechaHora;
         this.tipo = tipo;
-        this.ordenes = ordenes;
+        this.idOrdenes = idOrdenes;
         this.total = total;
     }
 
@@ -91,12 +91,12 @@ public class Pedido {
         this.tipo = tipo;
     }
 
-    public List<Orden> getOrdenes() {
-        return ordenes;
+    public List<Integer> getIdOrdenes() {
+        return idOrdenes;
     }
 
-    public void setOrdenes(List<Orden> ordenes) {
-        this.ordenes = ordenes;
+    public void setIdOrdenes(List<Integer> idOrdenes) {
+        this.idOrdenes = idOrdenes;
     }
 
     public double getTotal() {

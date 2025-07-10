@@ -25,6 +25,13 @@ public class Cliente {
         this.referencia = referencia;
     }
 
+    public Cliente(String nombre, String telefono, String direccion, String referencia) {
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.direccion = direccion;
+        this.referencia = referencia;
+    }
+
     public Cliente(Integer id, String dni, String nombre, String telefono, String direccion, String referencia) {
         this.id = id;
         this.dni = dni;

@@ -4,12 +4,12 @@
  */
 package proyectopolleria.dao.interfaces;
 
-import proyectopolleria.model.Proveedor;
+import proyectopolleria.model.Orden;
 
 /**
  *
  * @author andres
  */
-public interface ProveedorDao extends Dao<Proveedor, Integer>{
+public interface OrdenDao extends Dao<Orden, Integer>{
     
 }

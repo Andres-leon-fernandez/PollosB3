@@ -3,7 +3,7 @@ package proyectopolleria.dao.interfaces;
 import java.util.List;
 import proyectopolleria.dao.DaoException;
 
-public interface Dao<T, K> {
+public interface Dao<T,k> {
 
     void crear(T t) throws DaoException;
 
@@ -13,5 +13,5 @@ public interface Dao<T, K> {
 
     List<T> listarTodos() throws DaoException;
 
-    T obtener(K id) throws DaoException;
+    T obtener(k id) throws DaoException;
 }
