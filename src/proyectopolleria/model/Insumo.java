@@ -31,6 +31,17 @@ public class Insumo {
         this.idProveedor = idProveedor;
     }
 
+    public Insumo(Integer id, String nombre, double stock, double stockMin, Unidad unidad, double precioUnitario, Integer idProveedor) {
+        this.id = id;
+        this.nombre = nombre;
+        this.stock = stock;
+        this.stockMin = stockMin;
+        this.disponible = true;
+        this.unidad = unidad;
+        this.precioUnitario = precioUnitario;
+        this.idProveedor = idProveedor;
+    }
+
     public Insumo(String nombre, double stock, double stockMin, boolean disponible, Unidad unidad, double precioUnitario, Integer idProveedor) {
         this.nombre = nombre;
         this.stock = stock;
