@@ -3,7 +3,7 @@ package proyectopolleria;
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.JOptionPane;
 import proyectopolleria.seguridad.Autentificador;
-import proyectopolleria.controller.GestionDatosUsuario;
+import proyectopolleria.controller.ol.GestionDatosUsuario;
 import proyectopolleria.view.TablaPrincipal;
 
 public class TablaInicio extends javax.swing.JFrame {

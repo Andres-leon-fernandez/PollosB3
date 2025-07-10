@@ -1,4 +1,4 @@
-package proyectopolleria.controller;
+package proyectopolleria.controller.ol;
 import proyectopolleria.util.MenuPolleria;
 import java.util.List;
 import proyectopolleria.model.previos.Empleado;

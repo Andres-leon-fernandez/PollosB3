@@ -3,50 +3,51 @@ package proyectopolleria.model;
 public class Orden {
 
     private Integer id;
-    private Producto producto;
-    private Pedido pedido;
+    private Integer idProducto;
+    private Integer idPedido;
     private int cantidad;
     private double subtotal;
 
     public Orden() {
     }
 
-    public Orden(Producto producto, int cantidad, double subtotal) {
-        this.producto = producto;
-        this.cantidad = cantidad;
-        this.subtotal = cantidad * producto.getPrecio();
-    }
-
-    public Orden(Integer id, Producto producto, Pedido pedido, int cantidad, double subtotal) {
-        this.id = id;
-        this.producto = producto;
-        this.pedido = pedido;
+    public Orden(Integer idProducto, Integer idPedido, int cantidad, double subtotal) {
+        this.idProducto = idProducto;
+        this.idPedido = idPedido;
         this.cantidad = cantidad;
         this.subtotal = subtotal;
     }
 
-    public void setId(Integer id) {
+    public Orden(Integer id, Integer idProducto, Integer idPedido, int cantidad, double subtotal) {
         this.id = id;
-    }
-
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+        this.idProducto = idProducto;
+        this.idPedido = idPedido;
+        this.cantidad = cantidad;
+        this.subtotal = subtotal;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Producto getProducto() {
-        return producto;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setProducto(Producto producto) {
-        this.producto = producto;
+    public Integer getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(Integer idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public Integer getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(Integer idPedido) {
+        this.idPedido = idPedido;
     }
 
     public int getCantidad() {

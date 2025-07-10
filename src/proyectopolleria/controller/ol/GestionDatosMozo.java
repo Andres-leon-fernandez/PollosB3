@@ -1,4 +1,4 @@
-package proyectopolleria.controller;
+package proyectopolleria.controller.ol;
 
 import proyectopolleria.model.previos.Mozo;
 import java.io.BufferedReader;

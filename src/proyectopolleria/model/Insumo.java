@@ -15,22 +15,12 @@ public class Insumo {
     private boolean disponible;
     private Unidad unidad;
     private double precioUnitario;
-    private Proveedor proveedor;
+    private Integer idProveedor;
 
     public Insumo() {
     }
 
-    public Insumo(String nombre, double stock, double stockMin, Unidad unidad, double precioUnitario, Proveedor proveedor) {
-        this.nombre = nombre;
-        this.stock = stock;
-        this.stockMin = stockMin;
-        this.disponible = true;
-        this.unidad = unidad;
-        this.precioUnitario = precioUnitario;
-        this.proveedor = proveedor;
-    }
-
-    public Insumo(Integer id, String nombre, double stock, double stockMin, boolean disponible, Unidad unidad, double precioUnitario, Proveedor proveedor) {
+    public Insumo(Integer id, String nombre, double stock, double stockMin, boolean disponible, Unidad unidad, double precioUnitario, Integer idProveedor) {
         this.id = id;
         this.nombre = nombre;
         this.stock = stock;
@@ -38,27 +28,33 @@ public class Insumo {
         this.disponible = disponible;
         this.unidad = unidad;
         this.precioUnitario = precioUnitario;
-        this.proveedor = proveedor;
+        this.idProveedor = idProveedor;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setNombre(String nombre) {
+    public Insumo(String nombre, double stock, double stockMin, boolean disponible, Unidad unidad, double precioUnitario, Integer idProveedor) {
         this.nombre = nombre;
-    }
-
-    public void setUnidad(Unidad unidad) {
+        this.stock = stock;
+        this.stockMin = stockMin;
+        this.disponible = disponible;
         this.unidad = unidad;
+        this.precioUnitario = precioUnitario;
+        this.idProveedor = idProveedor;
     }
 
     public Integer getId() {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getNombre() {
         return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public double getStock() {
@@ -89,6 +85,10 @@ public class Insumo {
         return unidad;
     }
 
+    public void setUnidad(Unidad unidad) {
+        this.unidad = unidad;
+    }
+
     public double getPrecioUnitario() {
         return precioUnitario;
     }
@@ -97,12 +97,12 @@ public class Insumo {
         this.precioUnitario = precioUnitario;
     }
 
-    public Proveedor getProveedor() {
-        return proveedor;
+    public Integer getIdProveedor() {
+        return idProveedor;
     }
 
-    public void setProveedor(Proveedor proveedor) {
-        this.proveedor = proveedor;
+    public void setIdProveedor(Integer idProveedor) {
+        this.idProveedor = idProveedor;
     }
 
 }

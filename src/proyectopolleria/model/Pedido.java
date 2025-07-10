@@ -5,97 +5,106 @@ import java.util.List;
 
 public class Pedido {
 
+    public enum tipoPedido {
+        SALON,
+        DELIVERY
+    }
+
     private Integer id;
-    private Cliente cliente;
-    private Trabajador MOZO;
-    private Trabajador DELIVERY;
+    private Integer idCliente;
+    private Integer idMOZO;
+    private Integer idDELIVERY;
     private LocalDateTime fechaHora;
-    private String tipo;
+    private tipoPedido tipo;
     private List<Orden> ordenes;
     private double total;
 
     public Pedido() {
     }
 
-    public Pedido(Cliente cliente, Trabajador trabajador, String tipo, List<Orden> ordenes) {
-        this.cliente = cliente;
-        this.tipo = tipo.toUpperCase();
-        this.fechaHora = LocalDateTime.now();
-        this.ordenes = ordenes;
-
-        if (this.tipo.equals("SALON")) {
-            this.MOZO = trabajador;
-            this.DELIVERY = null;
-        } else if (this.tipo.equals("DELIVERY")) {
-            this.MOZO = null;
-            this.DELIVERY = trabajador;
-        } else {
-            throw new IllegalArgumentException("Tipo de pedido inválido: " + tipo);
-        }
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public void setMOZO(Trabajador MOZO) {
-        this.MOZO = MOZO;
-    }
-
-    public void setDELIVERY(Trabajador DELIVERY) {
-        this.DELIVERY = DELIVERY;
-    }
-
-    public void setFechaHora(LocalDateTime fechaHora) {
+    public Pedido(Integer idCliente, Integer idMOZO, Integer idDELIVERY, LocalDateTime fechaHora, tipoPedido tipo, List<Orden> ordenes, double total) {
+        this.idCliente = idCliente;
+        this.idMOZO = idMOZO;
+        this.idDELIVERY = idDELIVERY;
         this.fechaHora = fechaHora;
-    }
-
-    public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public void setOrdenes(List<Orden> ordenes) {
         this.ordenes = ordenes;
-    }
-
-    public void setTotal(double total) {
         this.total = total;
     }
 
-    public double getTotal() {
-        return total;
+    public Pedido(Integer id, Integer idCliente, Integer idMOZO, Integer idDELIVERY, LocalDateTime fechaHora, tipoPedido tipo, List<Orden> ordenes, double total) {
+        this.id = id;
+        this.idCliente = idCliente;
+        this.idMOZO = idMOZO;
+        this.idDELIVERY = idDELIVERY;
+        this.fechaHora = fechaHora;
+        this.tipo = tipo;
+        this.ordenes = ordenes;
+        this.total = total;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Trabajador getMOZO() {
-        return MOZO;
+    public Integer getIdCliente() {
+        return idCliente;
     }
 
-    public Trabajador getDELIVERY() {
-        return DELIVERY;
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public Integer getIdMOZO() {
+        return idMOZO;
+    }
+
+    public void setIdMOZO(Integer idMOZO) {
+        this.idMOZO = idMOZO;
+    }
+
+    public Integer getIdDELIVERY() {
+        return idDELIVERY;
+    }
+
+    public void setIdDELIVERY(Integer idDELIVERY) {
+        this.idDELIVERY = idDELIVERY;
     }
 
     public LocalDateTime getFechaHora() {
         return fechaHora;
     }
 
-    public String getTipo() {
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public tipoPedido getTipo() {
         return tipo;
+    }
+
+    public void setTipo(tipoPedido tipo) {
+        this.tipo = tipo;
     }
 
     public List<Orden> getOrdenes() {
         return ordenes;
+    }
+
+    public void setOrdenes(List<Orden> ordenes) {
+        this.ordenes = ordenes;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 
 }

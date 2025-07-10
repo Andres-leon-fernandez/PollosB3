@@ -9,7 +9,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import proyectopolleria.controller.GestionDatosPedido;
+import proyectopolleria.controller.ol.GestionDatosPedido;
 import proyectopolleria.util.MenuPolleria;
 
 

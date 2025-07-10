@@ -6,7 +6,7 @@ import java.io.Writer;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import proyectopolleria.controller.GestionDatosPedido;
+import proyectopolleria.controller.ol.GestionDatosPedido;
 
 public class TablaRegistroPedidos extends javax.swing.JFrame {
     

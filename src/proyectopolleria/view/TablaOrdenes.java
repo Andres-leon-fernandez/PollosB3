@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
-import proyectopolleria.controller.GestionDatosPedido;
+import proyectopolleria.controller.ol.GestionDatosPedido;
 
 public class TablaOrdenes extends javax.swing.JFrame {
     

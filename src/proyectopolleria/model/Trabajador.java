@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyectopolleria.model;
 
-/**
- *
- * @author andres
- */
+import proyectopolleria.util.Sha256;
+
 public class Trabajador {
 
     public enum TipoTrabajador {
@@ -33,7 +27,7 @@ public class Trabajador {
     public Trabajador(String password, String dni, String nombre, String correo, String telefono, TipoTrabajador tipoTrabajador) {
         this.dni = dni;
         this.user = generarUsuarioPorDNI(dni);
-        this.password = password;
+        this.password = Sha256.sha256(password);
         this.nombre = nombre;
         this.correo = correo;
         this.telefono = telefono;
@@ -56,10 +50,26 @@ public class Trabajador {
     }
 
     private String generarUsuarioPorDNI(String dni) {
-        if (dni != null && dni.length() >= 4) {
+        if (dni != null && dni.matches("\\d{8}")) {
             return "PB3" + dni.substring(dni.length() - 4);
         }
-        return null;
+        return "PB3XXXX"; // Valor por defecto si no es válido
+    }
+
+    public String getRolDescripcion() {
+        return switch (tipoTrabajador) {
+            case ADMIN ->
+                "Administrador";
+            case MOZO ->
+                "Mozo";
+            case DELIVERY ->
+                "Repartidor";
+        };
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + tipoTrabajador + ")";
     }
 
     public Integer getId() {

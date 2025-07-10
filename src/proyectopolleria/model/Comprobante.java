@@ -5,35 +5,43 @@ import java.util.List;
 
 public class Comprobante {
 
+    public enum TipoComprobante {
+        BOLETA,
+        FACTURA
+    }
+
+    public enum MetodoPago {
+        YAPE,
+        PLIN,
+        TARJETA,
+        EFECTIVO
+    }
+
     private Integer id;
-    private Pedido pedido;
+    private Integer idPedido;
     private LocalDateTime fechaHora;
     private double total;
-    private String tipoComprobante;
-    private String metodoPago;
+    private TipoComprobante tipoComprobante;
+    private MetodoPago metodoPago;
 
     public Comprobante() {
     }
 
-    public Comprobante(Pedido pedido, String tipoComprobante, String metodoPago) {
-        this.pedido = pedido;
-        this.fechaHora = LocalDateTime.now();
-        this.total = CalcularTotal(pedido);
-        this.tipoComprobante = tipoComprobante.toUpperCase();
-        this.metodoPago = metodoPago.toUpperCase();
-    }
-
-    public Comprobante(Integer id, Pedido pedido, LocalDateTime fechaHora, double total, String tipoComprobante, String metodoPago) {
+    public Comprobante(Integer id, Integer idPedido, LocalDateTime fechaHora, double total, TipoComprobante tipoComprobante, MetodoPago metodoPago) {
         this.id = id;
-        this.pedido = pedido;
+        this.idPedido = idPedido;
         this.fechaHora = fechaHora;
         this.total = total;
         this.tipoComprobante = tipoComprobante;
         this.metodoPago = metodoPago;
     }
 
-    private double CalcularTotal(Pedido p) {
-        return p.getOrdenes().stream().mapToDouble(Orden::getSubtotal).sum();
+    public Comprobante(Integer idPedido, LocalDateTime fechaHora, double total, TipoComprobante tipoComprobante, MetodoPago metodoPago) {
+        this.idPedido = idPedido;
+        this.fechaHora = fechaHora;
+        this.total = total;
+        this.tipoComprobante = tipoComprobante;
+        this.metodoPago = metodoPago;
     }
 
     public Integer getId() {
@@ -44,12 +52,12 @@ public class Comprobante {
         this.id = id;
     }
 
-    public Pedido getPedido() {
-        return pedido;
+    public Integer getIdPedido() {
+        return idPedido;
     }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public void setIdPedido(Integer idPedido) {
+        this.idPedido = idPedido;
     }
 
     public LocalDateTime getFechaHora() {
@@ -68,20 +76,20 @@ public class Comprobante {
         this.total = total;
     }
 
-    public String getTipoComprobante() {
+    public TipoComprobante getTipoComprobante() {
         return tipoComprobante;
     }
 
-    public void setTipoComprobante(String tipoComprobante) {
+    public void setTipoComprobante(TipoComprobante tipoComprobante) {
         this.tipoComprobante = tipoComprobante;
     }
 
-    public String getMetodoPago() {
+    public MetodoPago getMetodoPago() {
         return metodoPago;
     }
 
-    public void setMetodoPago(String metodoPago) {
+    public void setMetodoPago(MetodoPago metodoPago) {
         this.metodoPago = metodoPago;
     }
-
+    
 }

@@ -4,7 +4,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import proyectopolleria.controller.GestionDatosUsuario;
+import proyectopolleria.controller.ol.GestionDatosUsuario;
 
 
 public class TablaUsuario extends javax.swing.JFrame {
