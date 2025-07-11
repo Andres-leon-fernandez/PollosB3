@@ -48,6 +48,11 @@ public class Trabajador {
         this.disponible = disponible;
     }
 
+    private Trabajador(String user,String password){
+        this.user=user;
+        this.password=password;
+    }
+    
     private String generarUsuarioPorDNI(String dni) {
         if (dni != null && dni.matches("\\d{8}")) {
             return "PB3" + dni.substring(dni.length() - 4);
@@ -66,6 +71,8 @@ public class Trabajador {
         };
     }
 
+    
+    
     @Override
     public String toString() {
         return nombre + " (" + tipoTrabajador + ")";

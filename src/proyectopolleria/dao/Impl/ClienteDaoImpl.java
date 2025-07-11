@@ -6,6 +6,7 @@ import proyectopolleria.dao.interfaces.ClienteDao;
 import proyectopolleria.model.Cliente;
 import java.sql.*;
 import java.util.ArrayList;
+import proyectopolleria.util.Conexion;
 
 public class ClienteDaoImpl implements ClienteDao {
 
@@ -26,7 +27,7 @@ public class ClienteDaoImpl implements ClienteDao {
         PreparedStatement stat = null;
         ResultSet rs = null;
         try {
-            stat = conn.prepareStatement(insert,stat.RETURN_GENERATED_KEYS);
+            stat = conn.prepareStatement(insert, stat.RETURN_GENERATED_KEYS);
             stat.setString(1, t.getDni());
             stat.setString(2, t.getNombre());
             stat.setString(3, t.getTelefono());
@@ -190,4 +191,44 @@ public class ClienteDaoImpl implements ClienteDao {
         return c;
     }
 
+//public static void main(String[] args) {
+//try {
+//Connection conn = Conexion.getInstancia().getConexion();
+//DaoManagerImpl manager = new DaoManagerImpl(conn);
+//ClienteDao clienteDao = manager.getClienteDao();
+//
+//// Crear nuevo cliente
+//Cliente nuevo = new Cliente("12342678", "Juan Pérez", "987654321", "Av. Siempre Viva 123", "Frente al parque");
+//clienteDao.crear(nuevo);
+//System.out.println("Cliente creado con ID: " + nuevo.getId());
+//
+//// Listar todos
+//List<Cliente> lista = clienteDao.listarTodos();
+//System.out.println("Listado de clientes:");
+//for (Cliente c : lista) {
+//System.out.println(c.getId() + " - " + c.getNombre() + " - " + c.getDni());
+//}
+//
+//// Obtener por ID
+//Cliente buscado = clienteDao.obtener(nuevo.getId());
+//System.out.println("Cliente encontrado: " + buscado.getNombre());
+//
+//// Modificar
+//buscado.setTelefono("999888777");
+//clienteDao.modificar(buscado);
+//System.out.println("Cliente modificado");
+//
+//// Eliminar
+////            clienteDao.eliminar(buscado);
+////            System.out.println("Cliente eliminado");
+//
+//
+//// Cerrar conexión
+//manager.cerrarConexion();
+//
+//} catch (DaoException e) {
+//System.err.println("Error DAO: " + e.getMessage());
+//e.printStackTrace();
+//}
+//}
 }

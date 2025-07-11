@@ -2,15 +2,15 @@
 package proyectopolleria.dao.interfaces;
 
 public interface DaoManager {
-    AlmacenMovimientoDao getAlmacenMovimientoDao();
+//    AlmacenMovimientoDao getAlmacenMovimientoDao();
     ClienteDao getClienteDao();
-    ComprobanteDao getcComprobanteDao();
-    DetalleRecetaDao getDetalleRecetaDao();
+//    ComprobanteDao getcComprobanteDao();
+//    DetalleRecetaDao getDetalleRecetaDao();
     InsumoDao getInsumoDao();
-    OrdenDao getOrdenDao();
-    PedidoDao getPedidoDao();
+//    OrdenDao getOrdenDao();
+//    PedidoDao getPedidoDao();
     ProductoDao getProductoDao();
     ProveedorDao getProveedorDao();
-    RecetaDao getRecetaDao();
+//    RecetaDao getRecetaDao();
     TrabajadorDao getTrabajadorDao();
 }

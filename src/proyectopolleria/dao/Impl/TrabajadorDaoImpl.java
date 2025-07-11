@@ -141,6 +141,24 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
         return trabajador;
     }
 
+    private Trabajador convertidorLogin(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        String user = rs.getString("usuario");
+        String dni = rs.getString("dni");
+        String nombre = rs.getString("nombre");
+        String correo = rs.getString("correo");
+        String telefono = rs.getString("telefono");
+        boolean activo = rs.getBoolean("activo");
+        String tipo = rs.getString("tipo");
+        boolean disponible = rs.getBoolean("disponible");
+
+        Trabajador.TipoTrabajador tipoT = Trabajador.TipoTrabajador.valueOf(tipo.toString());
+
+        Trabajador trabajador = new Trabajador(id, user, dni, nombre, correo, telefono, activo, tipoT, disponible);
+        trabajador.setId(rs.getInt("id"));
+        return trabajador;
+    }
+
     @Override
     public List<Trabajador> listarTodos() throws DaoException {
         PreparedStatement stat = null;
@@ -208,6 +226,46 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
             }
         }
         return t;
+    }
+
+    public List<Trabajador> UserRegistro() throws DaoException {
+        List<Trabajador> trabajadores = new ArrayList<>();
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+
+        String sql = "SELECT id, usuario, password FROM trabajador";
+        try {
+            stat = conn.prepareStatement(sql);
+            rs = stat.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String usuario = rs.getString("usuario");
+                String password = rs.getString("password");
+
+                // Puedes usar un constructor reducido si lo tienes
+                Trabajador t = new Trabajador();
+                t.setUser(usuario);
+                t.setPassword(password); // Necesitas tener el campo password en la clase
+
+                trabajadores.add(t);
+            }
+
+        } catch (SQLException ex) {
+            throw new DaoException("Error al obtener lista de usuarios", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stat != null) {
+                    stat.close();
+                }
+            } catch (SQLException ex) {
+                throw new DaoException("Error cerrando recursos", ex);
+            }
+        }
+        return trabajadores;
     }
 
 }
