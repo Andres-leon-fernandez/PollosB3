@@ -36,10 +36,9 @@ public class Trabajador {
         this.disponible = (tipoTrabajador == TipoTrabajador.DELIVERY);
     }
 
-    public Trabajador(Integer id, String user, String password, String dni, String nombre, String correo, String telefono, boolean activo, TipoTrabajador tipoTrabajador, boolean disponible) {
+    public Trabajador(Integer id, String user , String dni, String nombre, String correo, String telefono, boolean activo, TipoTrabajador tipoTrabajador, boolean disponible) {
         this.id = id;
         this.user = user;
-        this.password = password;
         this.dni = dni;
         this.nombre = nombre;
         this.correo = correo;
@@ -53,7 +52,7 @@ public class Trabajador {
         if (dni != null && dni.matches("\\d{8}")) {
             return "PB3" + dni.substring(dni.length() - 4);
         }
-        return "PB3XXXX"; // Valor por defecto si no es válido
+        return "PB3XXXX"; 
     }
 
     public String getRolDescripcion() {

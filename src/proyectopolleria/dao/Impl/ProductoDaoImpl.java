@@ -1,43 +1,44 @@
 package proyectopolleria.dao.Impl;
 
+import proyectopolleria.dao.interfaces.ProductoDao;
+
+import java.sql.Connection;
 import java.util.List;
 import proyectopolleria.dao.DaoException;
-import proyectopolleria.dao.interfaces.InsumoDao;
-import proyectopolleria.model.Insumo;
-import java.sql.Connection;
+import proyectopolleria.model.Producto;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class InsumoDaoImpl implements InsumoDao {
+public class ProductoDaoImpl implements ProductoDao {
+
+    final String insert = "INSERT INTO producto(nombre, ruc, telefono, direccion,correo) VALUES (?, ?, ?, ?, ?)";
+    final String update = "UPDATE producto SET telefono = ?, direccion = ?, correo = ? WHERE id = ?";
+    final String delete = "delete from producto where id=?";
+    final String selectAll = "select * from producto";
+    final String selectId = "select * from producto where id=?";
 
     private Connection conn;
 
-    public InsumoDaoImpl(Connection conn) {
+    public ProductoDaoImpl(Connection conn) {
         this.conn = conn;
     }
 
-    final String insert = "INSERT INTO insumo(nombre, stock, stock_min, unidad,precio_unitario,proveedor_id) VALUES (?, ?, ?, ?, ?,?)";
-    final String update = "UPDATE insumo SET stock = ?, stock_min = ?, precio_unitario = ? proveedor_id = ?";
-    final String delete = "delete from insumo where id=?";
-    final String selectAll = "select * from insumo";
-    final String selectId = "select * from insumo where id=?";
-
     @Override
-    public void crear(Insumo t) throws DaoException {
+    public void crear(Producto t) throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
         try {
-            stat = conn.prepareStatement(insert,stat.RETURN_GENERATED_KEYS);
-            stat.setString(1, t.getNombre());
-            stat.setDouble(2, t.getStock());
-            stat.setString(3, t.getUnidad().name());
-            stat.setInt(4, t.getIdProveedor());
+            stat = conn.prepareStatement(insert, stat.RETURN_GENERATED_KEYS);
+            stat.setString(1, t.getDescripcion());
+            stat.setDouble(2, t.getPrecio());
+            stat.setString(3, t.getCategoria());
+            stat.setBoolean(4, t.isActivo());
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("Pueed que no se guardo xd");
             }
-            rs = stat.getGeneratedKeys();
+            rs = stat.executeQuery();
             if (rs.next()) {
                 t.setId(rs.getInt(1));
             } else {
@@ -64,17 +65,15 @@ public class InsumoDaoImpl implements InsumoDao {
     }
 
     @Override
-    public void modificar(Insumo t) throws DaoException {
+    public void modificar(Producto t) throws DaoException {
         PreparedStatement stat = null;
         try {
             stat = conn.prepareStatement(update);
-            stat.setString(1, t.getNombre());
-            stat.setDouble(2, t.getStock());
-            stat.setDouble(3, t.getStockMin());
-            stat.setString(4, t.getUnidad().name());
-            stat.setDouble(5, t.getPrecioUnitario());
-            stat.setInt(6, t.getIdProveedor());
-            stat.setInt(7, t.getId());
+            stat.setString(1, t.getDescripcion());
+            stat.setDouble(2, t.getPrecio());
+            stat.setString(3, t.getCategoria());
+            stat.setBoolean(4, t.isActivo());
+            stat.setInt(5, t.getId());
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("puede que no se actualizo xd");
             }
@@ -94,7 +93,7 @@ public class InsumoDaoImpl implements InsumoDao {
     }
 
     @Override
-    public void eliminar(Insumo t) throws DaoException {
+    public void eliminar(Producto t) throws DaoException {
         PreparedStatement stat = null;
         try {
             stat = conn.prepareStatement(delete);
@@ -109,37 +108,34 @@ public class InsumoDaoImpl implements InsumoDao {
                 try {
                     stat.close();
                 } catch (SQLException ex) {
-                    throw new DaoException(update, ex);
+                    throw new DaoException("error en sql", ex);
                 }
             }
         }
     }
 
-    private Insumo convertidor(ResultSet rs) throws SQLException {
+    private Producto convertidor(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
-        String nombre = rs.getString("nombre");
-        double strock = rs.getDouble("stock");
-        double strockMin = rs.getDouble("stock_min");
-        String unidadStr = rs.getString("unidad");
-        double precioUnitario = rs.getDouble("precio_unitario");
-        int idProveedor = rs.getInt("proveedor_id");
-        Insumo.Unidad unidad = Insumo.Unidad.valueOf(unidadStr.toUpperCase());
+        String descripcion = rs.getString("descripcion");
+        double ruc = rs.getDouble("precio");
+        String telefono = rs.getString("categoria");
+        boolean activo = rs.getBoolean("activo");
 
-        Insumo insumo = new Insumo(id, nombre, strock, strockMin, true, unidad, precioUnitario, idProveedor);
-        insumo.setId(rs.getInt("id"));
-        return insumo;
+        Producto producto = new Producto(id, descripcion, ruc, telefono, activo);
+        producto.setId(rs.getInt("id"));
+        return producto;
     }
 
     @Override
-    public List<Insumo> listarTodos() throws DaoException {
+    public List<Producto> listarTodos() throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
-        List<Insumo> Insumos = new ArrayList<>();
+        List<Producto> Productos = new ArrayList<>();
         try {
             stat = conn.prepareStatement(selectAll);
             rs = stat.executeQuery();
             while (rs.next()) {
-                Insumos.add(convertidor(rs));
+                Productos.add(convertidor(rs));
             }
 
         } catch (SQLException ex) {
@@ -160,20 +156,20 @@ public class InsumoDaoImpl implements InsumoDao {
                 }
             }
         }
-        return Insumos;
+        return Productos;
     }
 
     @Override
-    public Insumo obtener(Integer id) throws DaoException {
+    public Producto obtener(Integer id) throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
-        Insumo i = null;
+        Producto p = null;
         try {
             stat = conn.prepareStatement(selectId);
             stat.setInt(1, id);
             rs = stat.executeQuery();
             if (rs.next()) {
-                i = convertidor(rs);
+                p = convertidor(rs);
             } else {
                 throw new DaoException("no se ha encontrado ese registro");
             }
@@ -196,6 +192,7 @@ public class InsumoDaoImpl implements InsumoDao {
                 }
             }
         }
-        return i;
+        return p;
     }
+
 }

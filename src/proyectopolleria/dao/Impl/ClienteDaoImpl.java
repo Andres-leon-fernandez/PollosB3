@@ -26,7 +26,7 @@ public class ClienteDaoImpl implements ClienteDao {
         PreparedStatement stat = null;
         ResultSet rs = null;
         try {
-            stat = conn.prepareStatement(insert);
+            stat = conn.prepareStatement(insert,stat.RETURN_GENERATED_KEYS);
             stat.setString(1, t.getDni());
             stat.setString(2, t.getNombre());
             stat.setString(3, t.getTelefono());

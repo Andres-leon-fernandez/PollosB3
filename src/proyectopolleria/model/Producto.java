@@ -30,14 +30,22 @@ public class Producto {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
         if (descripcion == null || descripcion.trim().isEmpty()) {
-        throw new IllegalArgumentException("La descripción no puede estar vacía.");
-    }
+            throw new IllegalArgumentException("La descripción no puede estar vacía.");
+        }
         this.descripcion = descripcion;
     }
 
@@ -47,8 +55,8 @@ public class Producto {
 
     public void setPrecio(double precio) {
         if (precio < 0) {
-        throw new IllegalArgumentException("El precio no puede ser negativo.");
-    }
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
         this.precio = precio;
     }
 

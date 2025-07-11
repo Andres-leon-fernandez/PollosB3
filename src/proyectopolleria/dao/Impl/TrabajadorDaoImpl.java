@@ -1,43 +1,53 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package proyectopolleria.dao.Impl;
 
+import proyectopolleria.dao.interfaces.TrabajadorDao;
+
+import java.sql.Connection;
 import java.util.List;
 import proyectopolleria.dao.DaoException;
-import proyectopolleria.dao.interfaces.InsumoDao;
-import proyectopolleria.model.Insumo;
-import java.sql.Connection;
+import proyectopolleria.model.Trabajador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import proyectopolleria.util.Conexion;
+import proyectopolleria.util.Sha256;
 
-public class InsumoDaoImpl implements InsumoDao {
+public class TrabajadorDaoImpl implements TrabajadorDao {
 
     private Connection conn;
 
-    public InsumoDaoImpl(Connection conn) {
+    public TrabajadorDaoImpl(Connection conn) {
         this.conn = conn;
     }
 
-    final String insert = "INSERT INTO insumo(nombre, stock, stock_min, unidad,precio_unitario,proveedor_id) VALUES (?, ?, ?, ?, ?,?)";
-    final String update = "UPDATE insumo SET stock = ?, stock_min = ?, precio_unitario = ? proveedor_id = ?";
-    final String delete = "delete from insumo where id=?";
-    final String selectAll = "select * from insumo";
-    final String selectId = "select * from insumo where id=?";
+    final String insert = "INSERT INTO trabajador(password, dni, nombre, correo,telefono,tipo,usuario) VALUES (?, ?, ?, ?, ?,?,?)";
+    final String update = "UPDATE trabajador SET password = ?, correo = ?, telefono = ?, tipo = ? WHERE id = ?";
+    final String delete = "delete from trabajador where id=?";
+    final String selectAll = "select * from trabajador";
+    final String selectId = "select * from trabajador where id=?";
 
     @Override
-    public void crear(Insumo t) throws DaoException {
+    public void crear(Trabajador t) throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
         try {
-            stat = conn.prepareStatement(insert,stat.RETURN_GENERATED_KEYS);
-            stat.setString(1, t.getNombre());
-            stat.setDouble(2, t.getStock());
-            stat.setString(3, t.getUnidad().name());
-            stat.setInt(4, t.getIdProveedor());
+            stat = conn.prepareStatement(insert, stat.RETURN_GENERATED_KEYS);
+            stat.setString(1, Sha256.sha256(t.getPassword()));
+            stat.setString(2, t.getDni());
+            stat.setString(3, t.getNombre());
+            stat.setString(4, t.getCorreo());
+            stat.setString(5, t.getTelefono());
+            stat.setString(6, t.getTipoTrabajador().name());
+            stat.setString(7, t.getUser());
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("Pueed que no se guardo xd");
             }
-            rs = stat.getGeneratedKeys();
+            rs = stat.executeQuery();
             if (rs.next()) {
                 t.setId(rs.getInt(1));
             } else {
@@ -64,17 +74,15 @@ public class InsumoDaoImpl implements InsumoDao {
     }
 
     @Override
-    public void modificar(Insumo t) throws DaoException {
+    public void modificar(Trabajador t) throws DaoException {
         PreparedStatement stat = null;
         try {
             stat = conn.prepareStatement(update);
-            stat.setString(1, t.getNombre());
-            stat.setDouble(2, t.getStock());
-            stat.setDouble(3, t.getStockMin());
-            stat.setString(4, t.getUnidad().name());
-            stat.setDouble(5, t.getPrecioUnitario());
-            stat.setInt(6, t.getIdProveedor());
-            stat.setInt(7, t.getId());
+            stat.setString(1, t.getPassword());
+            stat.setString(2, t.getCorreo());
+            stat.setString(3, t.getTelefono());
+            stat.setString(4, t.getTipoTrabajador().name());
+            stat.setInt(5, t.getId());
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("puede que no se actualizo xd");
             }
@@ -94,7 +102,7 @@ public class InsumoDaoImpl implements InsumoDao {
     }
 
     @Override
-    public void eliminar(Insumo t) throws DaoException {
+    public void eliminar(Trabajador t) throws DaoException {
         PreparedStatement stat = null;
         try {
             stat = conn.prepareStatement(delete);
@@ -115,31 +123,34 @@ public class InsumoDaoImpl implements InsumoDao {
         }
     }
 
-    private Insumo convertidor(ResultSet rs) throws SQLException {
+    private Trabajador convertidor(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
+        String user = rs.getString("usuario");
+        String dni = rs.getString("dni");
         String nombre = rs.getString("nombre");
-        double strock = rs.getDouble("stock");
-        double strockMin = rs.getDouble("stock_min");
-        String unidadStr = rs.getString("unidad");
-        double precioUnitario = rs.getDouble("precio_unitario");
-        int idProveedor = rs.getInt("proveedor_id");
-        Insumo.Unidad unidad = Insumo.Unidad.valueOf(unidadStr.toUpperCase());
+        String correo = rs.getString("correo");
+        String telefono = rs.getString("telefono");
+        boolean activo = rs.getBoolean("activo");
+        String tipo = rs.getString("tipo");
+        boolean disponible = rs.getBoolean("disponible");
 
-        Insumo insumo = new Insumo(id, nombre, strock, strockMin, true, unidad, precioUnitario, idProveedor);
-        insumo.setId(rs.getInt("id"));
-        return insumo;
+        Trabajador.TipoTrabajador tipoT = Trabajador.TipoTrabajador.valueOf(tipo.toString());
+
+        Trabajador trabajador = new Trabajador(id, user, dni, nombre, correo, telefono, activo, tipoT, disponible);
+        trabajador.setId(rs.getInt("id"));
+        return trabajador;
     }
 
     @Override
-    public List<Insumo> listarTodos() throws DaoException {
+    public List<Trabajador> listarTodos() throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
-        List<Insumo> Insumos = new ArrayList<>();
+        List<Trabajador> Trabajadores = new ArrayList<>();
         try {
             stat = conn.prepareStatement(selectAll);
             rs = stat.executeQuery();
             while (rs.next()) {
-                Insumos.add(convertidor(rs));
+                Trabajadores.add(convertidor(rs));
             }
 
         } catch (SQLException ex) {
@@ -160,20 +171,20 @@ public class InsumoDaoImpl implements InsumoDao {
                 }
             }
         }
-        return Insumos;
+        return Trabajadores;
     }
 
     @Override
-    public Insumo obtener(Integer id) throws DaoException {
+    public Trabajador obtener(Integer id) throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
-        Insumo i = null;
+        Trabajador t = null;
         try {
             stat = conn.prepareStatement(selectId);
             stat.setInt(1, id);
             rs = stat.executeQuery();
             if (rs.next()) {
-                i = convertidor(rs);
+                t = convertidor(rs);
             } else {
                 throw new DaoException("no se ha encontrado ese registro");
             }
@@ -196,6 +207,7 @@ public class InsumoDaoImpl implements InsumoDao {
                 }
             }
         }
-        return i;
+        return t;
     }
+
 }
