@@ -4,10 +4,17 @@
  */
 package proyectopolleria.service;
 
+import java.util.List;
+import proyectopolleria.dao.DaoException;
+import proyectopolleria.model.Trabajador;
+
 /**
  *
  * @author Andres
  */
-public class TrabajadorService {
-    
+public interface TrabajadorService {
+
+    Trabajador login(String usuario, String password) throws DaoException;
+
+    List<Trabajador> listarUsuarios() throws DaoException;
 }

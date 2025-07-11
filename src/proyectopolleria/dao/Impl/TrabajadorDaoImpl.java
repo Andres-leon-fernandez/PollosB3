@@ -268,4 +268,38 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
         return trabajadores;
     }
 
+    @Override
+    public Trabajador login(String usuario, String password) throws DaoException {
+        String sql = "SELECT * FROM trabajador WHERE usuario=? AND password=?";
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, usuario);
+            st.setString(2, password);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    return convertidorLogin(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Login fallido", e);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Trabajador> listarUsuarios() throws DaoException {
+        List<Trabajador> list = new ArrayList<>();
+        String sql = "SELECT usuario, password FROM trabajador";
+        try (PreparedStatement st = conn.prepareStatement(sql); ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                Trabajador t = new Trabajador();
+                t.setUser(rs.getString("usuario"));
+                t.setPassword(rs.getString("password"));
+                list.add(t);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error listando usuarios", e);
+        }
+        return list;
+    }
+
 }

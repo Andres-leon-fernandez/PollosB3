@@ -2,25 +2,25 @@ package proyectopolleria.model;
 
 public class DetalleReceta {
 
-    private Integer idProducto;
+    private Integer idInsumo;
     private Integer idReceta;
     private double cantidad;
 
     public DetalleReceta() {
     }
 
-    public DetalleReceta(Integer idProducto, Integer idReceta, double cantidad) {
-        this.idProducto = idProducto;
+    public DetalleReceta(Integer idInsumo, Integer idReceta, double cantidad) {
+        this.idInsumo = idInsumo;
         this.idReceta = idReceta;
         this.cantidad = cantidad;
     }
 
-    public Integer getId() {
-        return idProducto;
+    public Integer getIdInsumo() {
+        return idInsumo;
     }
 
-    public void setId(Integer idProducto) {
-        this.idProducto = idProducto;
+    public void setIdInsumo(Integer idInsumo) {
+        this.idInsumo = idInsumo;
     }
 
     public Integer getIdReceta() {

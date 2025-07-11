@@ -1,22 +1,32 @@
 package proyectopolleria;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.sql.Connection;
 import javax.swing.JOptionPane;
+import proyectopolleria.controller.TrabajadorController;
 import proyectopolleria.seguridad.Autentificador;
 import proyectopolleria.controller.ol.GestionDatosUsuario;
+import proyectopolleria.dao.DaoException;
+import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
+import proyectopolleria.model.Trabajador;
+import proyectopolleria.service.Impl.TrabajadorServiceImpl;
+import proyectopolleria.util.Conexion;
 import proyectopolleria.view.TablaPrincipal;
 
 public class TablaInicio extends javax.swing.JFrame {
 
+    private TrabajadorController ctrl;
     private Autentificador autenticador = new Autentificador();
-    
+
     public TablaInicio() {
-        
+
         initComponents();
-        setLocationRelativeTo(null);
-        cargarUsuariosDesdeCSV();
-        autenticador.agregarUsuario("user", "admin01");
+        Connection conn = Conexion.getInstancia().getConexion();
+        TrabajadorDaoImpl dao = new TrabajadorDaoImpl(conn);
+        TrabajadorServiceImpl srv = new TrabajadorServiceImpl(dao);
+        ctrl = new TrabajadorController(srv);
     }
+
     private void cargarUsuariosDesdeCSV() {
         // Llamar a la clase GestionDatosUsuario para cargar usuarios desde el archivo CSV
         Object[][] data = GestionDatosUsuario.cargarDatosDesdeCSV("tu_archivo.csv", new String[]{"ID", "Contraseña"});
@@ -30,29 +40,26 @@ public class TablaInicio extends javax.swing.JFrame {
             }
         }
     }
-    private void ingresarActionPerformed(java.awt.event.ActionEvent evt) {                                         
-    String id = jTextField1.getText();
-    String password = new String(jPasswordField1.getPassword());
 
-    if (autenticador.autenticar(id, password)) {
-        JOptionPane.showMessageDialog(this, "Bienvenido!");
-
-        // Abre la ventana de TablaPrincipal
-        TablaPrincipal principalFrame = new TablaPrincipal();
-        
-        // Actualiza el jTextField1 en TablaPrincipal
-        principalFrame.actualizarTextField(id);
-
-        // Cierra la ventana actual (TablaInicio)
-        this.dispose();
-        
-        principalFrame.setVisible(true);
-
-    } else {
-        JOptionPane.showMessageDialog(this, "ID o contraseña incorrecta.", "Error", JOptionPane.ERROR_MESSAGE);
+    private void ingresarActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            String u = jTextField1.getText();
+            String p = new String(jPasswordField1.getPassword());
+            Trabajador t = ctrl.login(u, p);
+            if (t != null) {
+                JOptionPane.showMessageDialog(this, "Bienvenido!");
+                TablaPrincipal principalFrame = new TablaPrincipal();
+                principalFrame.actualizarTextField(u);
+                this.dispose();
+                principalFrame.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Credenciales inválidas");
+            }
+        } catch (DaoException ex) {
+            JOptionPane.showMessageDialog(this, "Error en login: " + ex.getMessage());
+        }
 
     }
-} 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -223,11 +230,11 @@ public class TablaInicio extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-            ingresarActionPerformed(evt);
+        ingresarActionPerformed(evt);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-            System.exit(0);         // TODO add your handling code here:
+        System.exit(0);         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

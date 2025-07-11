@@ -2,31 +2,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package proyectopolleria.controller;
+package proyectopolleria.service.Impl;
 
 import java.util.List;
 import proyectopolleria.dao.DaoException;
+import proyectopolleria.dao.interfaces.TrabajadorDao;
 import proyectopolleria.model.Trabajador;
 import proyectopolleria.service.TrabajadorService;
 
 /**
  *
- * @author Andres
+ * @author andres
  */
-public class TrabajadorController {
+public class TrabajadorServiceImpl implements TrabajadorService{
 
-    private TrabajadorService service;
+    private TrabajadorDao dao;
 
-    public TrabajadorController(TrabajadorService srv) {
-        this.service = srv;
+    public TrabajadorServiceImpl(TrabajadorDao dao) {
+        this.dao = dao;
     }
 
+    @Override
     public Trabajador login(String u, String p) throws DaoException {
-        return service.login(u, p);
+        return dao.login(u, p);
     }
 
+    @Override
     public List<Trabajador> listarUsuarios() throws DaoException {
-        return service.listarUsuarios();
+        return dao.listarUsuarios();
     }
-
 }
