@@ -7,7 +7,7 @@ package proyectopolleria.controller;
 import java.util.List;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Trabajador;
-import proyectopolleria.service.TrabajadorService;
+import proyectopolleria.service.interfaz.TrabajadorService;
 
 /**
  *

@@ -97,7 +97,7 @@ public class ComprobanteDaoImpl implements ComprobanteDao {
 
     @Override
     public Comprobante obtener(Integer id) throws DaoException {
-        try (PreparedStatement stat = conn.prepareStatement("SELECT * FROM comprobante WHERE id = ?")) {
+        try (PreparedStatement stat = conn.prepareStatement(SELECT_BY_PEDIDO)) {
             stat.setInt(1, id);
             try (ResultSet rs = stat.executeQuery()) {
                 if (rs.next()) {

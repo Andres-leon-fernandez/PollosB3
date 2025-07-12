@@ -11,10 +11,14 @@ import proyectopolleria.util.Conexion;
 public class ClienteDaoImpl implements ClienteDao {
 
     private Connection conn;
+    private final String selectDni;
 
-    public ClienteDaoImpl(Connection conn) {
+    public ClienteDaoImpl(Connection conn, String selectDni) {
         this.conn = conn;
+        this.selectDni = "select * from cliente where dni=?";
     }
+
+    
 
     final String insert = "INSERT INTO cliente(dni, nombre, telefono, direccion, referencia) VALUES (?, ?, ?, ?, ?)";
     final String update = "UPDATE cliente SET telefono = ?, direccion = ?, referencia = ? WHERE id = ?";
@@ -189,6 +193,41 @@ public class ClienteDaoImpl implements ClienteDao {
             }
         }
         return c;
+    }
+
+    private Cliente obtenerPorDni(String dni) throws DaoException{
+        PreparedStatement stat = null;
+        ResultSet rs = null;
+        Cliente cli = null;
+        try {
+            stat = conn.prepareStatement(selectDni);
+            stat.setInt(1, dni);
+            rs = stat.executeQuery();
+            if (rs.next()) {
+                cli = convertidor(rs);
+            } else {
+                throw new DaoException("no se ha encontrado ese registro");
+            }
+
+        } catch (SQLException ex) {
+            throw new DaoException("error en sql", ex);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    throw new DaoException("error en sql", ex);
+                }
+            }
+            if (stat != null) {
+                try {
+                    stat.close();
+                } catch (SQLException ex) {
+                    throw new DaoException("error en sql", ex);
+                }
+            }
+        }
+        return cli;
     }
 
 //public static void main(String[] args) {

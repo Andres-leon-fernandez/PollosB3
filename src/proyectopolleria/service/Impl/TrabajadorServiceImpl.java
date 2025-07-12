@@ -8,18 +8,43 @@ import java.util.List;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.dao.interfaces.TrabajadorDao;
 import proyectopolleria.model.Trabajador;
-import proyectopolleria.service.TrabajadorService;
+import proyectopolleria.service.interfaz.TrabajadorService;
 
 /**
  *
  * @author andres
  */
-public class TrabajadorServiceImpl implements TrabajadorService{
+public class TrabajadorServiceImpl implements TrabajadorService {
 
     private TrabajadorDao dao;
 
     public TrabajadorServiceImpl(TrabajadorDao dao) {
         this.dao = dao;
+    }
+
+    @Override
+    public void registrarTrabajador(Trabajador trabajador) throws DaoException {
+        dao.crear(trabajador);
+    }
+
+    @Override
+    public void actualizarTrabajador(Trabajador trabajador) throws DaoException {
+        dao.modificar(trabajador);
+    }
+
+    @Override
+    public void eliminarTrabajador(Trabajador trabajador) throws DaoException {
+        dao.eliminar(trabajador);
+    }
+
+    @Override
+    public Trabajador obtenerPorId(int id) throws DaoException {
+        return dao.obtener(id);
+    }
+
+    @Override
+    public List<Trabajador> listarTodos() throws DaoException {
+        return dao.listarTodos();
     }
 
     @Override
