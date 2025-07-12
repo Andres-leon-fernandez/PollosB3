@@ -18,20 +18,19 @@ public class ClienteDaoImpl implements ClienteDao {
         this.selectDni = "select * from cliente where dni=?";
     }
 
-    
-
-    final String insert = "INSERT INTO cliente(dni, nombre, telefono, direccion, referencia) VALUES (?, ?, ?, ?, ?)";
-    final String update = "UPDATE cliente SET telefono = ?, direccion = ?, referencia = ? WHERE id = ?";
-    final String delete = "delete from cliente where id=?";
-    final String selectAll = "select * from cliente";
-    final String selectId = "select * from cliente where id=?";
+    private static final String INSERT = "INSERT INTO cliente(dni, nombre, telefono, direccion, referencia) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE cliente SET telefono = ?, direccion = ?, referencia = ? WHERE id = ?";
+    private static final String DELETE = "DELETE FROM cliente WHERE id = ?";
+    private static final String SELECT_ALL = "SELECT * FROM cliente";
+    private static final String SELECT_ID = "SELECT * FROM cliente WHERE id = ?";
+    private static final String SELECT_DNI = "SELECT * FROM cliente WHERE dni = ?";
 
     @Override
     public void crear(Cliente t) throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
         try {
-            stat = conn.prepareStatement(insert, stat.RETURN_GENERATED_KEYS);
+            stat = conn.prepareStatement(INSERT, stat.RETURN_GENERATED_KEYS);
             stat.setString(1, t.getDni());
             stat.setString(2, t.getNombre());
             stat.setString(3, t.getTelefono());
@@ -70,7 +69,7 @@ public class ClienteDaoImpl implements ClienteDao {
     public void modificar(Cliente t) throws DaoException {
         PreparedStatement stat = null;
         try {
-            stat = conn.prepareStatement(update);
+            stat = conn.prepareStatement(UPDATE);
             stat.setString(1, t.getTelefono());
             stat.setString(2, t.getDireccion());
             stat.setString(3, t.getReferencia());
@@ -96,7 +95,7 @@ public class ClienteDaoImpl implements ClienteDao {
     public void eliminar(Cliente t) throws DaoException {
         PreparedStatement stat = null;
         try {
-            stat = conn.prepareStatement(delete);
+            stat = conn.prepareStatement(DELETE);
             stat.setInt(1, t.getId());
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("puede que no se elimino xd");
@@ -108,21 +107,20 @@ public class ClienteDaoImpl implements ClienteDao {
                 try {
                     stat.close();
                 } catch (SQLException ex) {
-                    throw new DaoException(update, ex);
+                    throw new DaoException("error en sql", ex);
                 }
             }
         }
     }
 
     private Cliente convertidor(ResultSet rs) throws SQLException {
-        String dni = rs.getString("dni");
-        String nombre = rs.getString("nombre");
-        String telefono = rs.getString("telefono");
-        String direccion = rs.getString("direccion");
-        String referencia = rs.getString("referencia");
-
-        Cliente cliente = new Cliente(dni, nombre, telefono, direccion, referencia);
+        Cliente cliente = new Cliente();
         cliente.setId(rs.getInt("id"));
+        cliente.setDni(rs.getString("dni"));
+        cliente.setNombre(rs.getString("nombre"));
+        cliente.setTelefono(rs.getString("telefono"));
+        cliente.setDireccion(rs.getString("direccion"));
+        cliente.setReferencia(rs.getString("referencia"));
         return cliente;
     }
 
@@ -132,7 +130,7 @@ public class ClienteDaoImpl implements ClienteDao {
         ResultSet rs = null;
         List<Cliente> clientes = new ArrayList<>();
         try {
-            stat = conn.prepareStatement(selectAll);
+            stat = conn.prepareStatement(SELECT_ALL);
             rs = stat.executeQuery();
             while (rs.next()) {
                 clientes.add(convertidor(rs));
@@ -165,7 +163,7 @@ public class ClienteDaoImpl implements ClienteDao {
         ResultSet rs = null;
         Cliente c = null;
         try {
-            stat = conn.prepareStatement(selectId);
+            stat = conn.prepareStatement(SELECT_ID);
             stat.setInt(1, id);
             rs = stat.executeQuery();
             if (rs.next()) {
@@ -195,18 +193,17 @@ public class ClienteDaoImpl implements ClienteDao {
         return c;
     }
 
-    private Cliente obtenerPorDni(String dni) throws DaoException{
+    @Override
+    public Cliente obtenerPorDni(String dni) throws DaoException {
         PreparedStatement stat = null;
         ResultSet rs = null;
         Cliente cli = null;
         try {
-            stat = conn.prepareStatement(selectDni);
-            stat.setInt(1, dni);
+            stat = conn.prepareStatement(SELECT_DNI);
+            stat.setString(1, dni);
             rs = stat.executeQuery();
             if (rs.next()) {
                 cli = convertidor(rs);
-            } else {
-                throw new DaoException("no se ha encontrado ese registro");
             }
 
         } catch (SQLException ex) {

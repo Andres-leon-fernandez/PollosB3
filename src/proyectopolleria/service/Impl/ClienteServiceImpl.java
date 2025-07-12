@@ -1,6 +1,8 @@
 package proyectopolleria.service.Impl;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.dao.interfaces.ClienteDao;
 import proyectopolleria.model.Cliente;
@@ -10,56 +12,74 @@ import proyectopolleria.service.interfaz.ClienteService;
 public class ClienteServiceImpl implements ClienteService {
 
     private ClienteDao clienteDao;
+    private static final Logger LOGGER = Logger.getLogger(ClienteServiceImpl.class.getName());
 
     public ClienteServiceImpl(ClienteDao clienteDao) {
         this.clienteDao = clienteDao;
     }
 
-    private void ValidarCliente(Cliente c, boolean isNew) throws ValidationException {
+    private void ValidarCliente(Cliente c, boolean isNew) throws ValidationException, DaoException {
         if (c == null) {
-            throw new ValidationException("Cliente nulo");
+            throw new ValidationException("El cliente no puede ser nulo.");
         }
         if (c.getDni() == null || c.getDni().trim().isEmpty()) {
-            throw new ValidationException("Dni nulo");
+            throw new ValidationException("El DNI no puede ser nulo o vacío.");
         }
         if (c.getDni().trim().length() != 8 && c.getDni().trim().length() != 11) {
-            throw new ValidationException("Dni invalido");
+            throw new ValidationException("El DNI debe tener 8 (DNI) u 11 (RUC) caracteres.");
         }
         if (c.getNombre() == null || c.getNombre().trim().isEmpty()) {
-            throw new ValidationException("Nombre vacio");
+            throw new ValidationException("El nombre no puede ser nulo o vacío.");
         }
         if (c.getTelefono() != null && !c.getTelefono().matches("^9[0-9]{8}$")) {
-            throw new ValidationException("Telefono nulo o con valores incorrectos");
+            throw new ValidationException("El teléfono es inválido. Debe comenzar con '9' y tener 9 dígitos.");
         }
-        if (isNew || (c.getId() != null && !c.DNI_NO_CAMBIO_EN_ESTA_ACTUALIZACION(clienteDao.obtener(c.getId()).getDni(), c.getDni()))) {
-            try {
-                // Asumiendo que ClienteDao tiene un método para verificar la existencia del DNI
-                // Necesitarás añadir este método a tu interfaz ClienteDao y su implementación.
-                Cliente existingCliente = clienteDao.obtenerPorDni(c.getDni());
-                // Si existe un cliente con ese DNI Y no es el mismo cliente que estamos actualizando, entonces es un DNI duplicado.
-                if (existingCliente != null && (isNew || !existingCliente.getId().equals(c.getId()))) {
-                    throw new ValidationException("Ya existe un cliente con el DNI proporcionado.");
-                }
-            } catch (DaoException e) {
-                // Si hay un error de DAO durante la validación, envuélvelo o relánzalo
-                throw new DaoException("Error al verificar la unicidad del DNI: " + e.getMessage(), e);
+        Cliente existingCliente = clienteDao.obtenerPorDni(c.getDni());
+        if (isNew) {
+            // En caso de un nuevo registro, el DNI no debe existir.
+            if (existingCliente != null) {
+                throw new ValidationException("Ya existe un cliente con el DNI proporcionado.");
+            }
+        } else {
+            // En caso de una actualización, el DNI solo debe ser único si ha cambiado.
+            if (existingCliente != null && !existingCliente.getId().equals(c.getId())) {
+                throw new ValidationException("Ya existe un cliente con el DNI proporcionado.");
             }
         }
     }
 
-    private boolean DNI_NO_CAMBIO_EN_ESTA_ACTUALIZACION(String oldDni, String newDni) {
-        return oldDni != null && oldDni.equals(newDni);
-    }
-
     @Override
     public void registrarCliente(Cliente cliente) throws DaoException {
-        ValidarCliente(cliente, true);
-        clienteDao.crear(cliente);
+        try {
+            ValidarCliente(cliente, false);
+            clienteDao.crear(cliente);
+        } catch (ValidationException ex) {
+            try {
+                throw ex;
+            } catch (ValidationException ex1) {
+                LOGGER.log(Level.SEVERE, null, ex1);
+            }
+        } catch (DaoException ex) {
+            LOGGER.log(Level.SEVERE, "Error en la capa DAO al crear un cliente.", ex);
+            throw ex;
+        }
     }
 
     @Override
     public void actualizarCliente(Cliente cliente) throws DaoException {
-        clienteDao.modificar(cliente);
+        try {
+            ValidarCliente(cliente, false);
+            clienteDao.modificar(cliente);
+        } catch (ValidationException ex) {
+            try {
+                throw ex;
+            } catch (ValidationException ex1) {
+                LOGGER.log(Level.SEVERE, null, ex1);
+            }
+        } catch (DaoException ex) {
+            LOGGER.log(Level.SEVERE, "Error en la capa DAO al actualizar un cliente.", ex);
+            throw ex;
+        }
     }
 
     @Override

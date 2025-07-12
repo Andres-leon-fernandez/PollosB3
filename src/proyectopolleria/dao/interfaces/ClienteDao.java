@@ -4,11 +4,14 @@
  */
 package proyectopolleria.dao.interfaces;
 
+import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Cliente;
 
 /**
  *
  * @author andres
  */
-public interface ClienteDao extends Dao<Cliente, Integer>{
+public interface ClienteDao extends Dao<Cliente, Integer> {
+
+    Cliente obtenerPorDni(String dni) throws DaoException;
 }
