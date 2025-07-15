@@ -38,7 +38,7 @@ public class DaoManagerImpl implements DaoManager {
     @Override
     public AlmacenMovimientoDao getAlmacenMovimientoDao() {
         if (almacenMovimientoDao == null) {
-            almacenMovimientoDao = new AlmacenMovimientoDaoImpl(conn);
+            almacenMovimientoDao = new AlmacenMovimientoImpl(conn);
         }
         return almacenMovimientoDao;
     }
