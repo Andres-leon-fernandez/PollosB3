@@ -123,4 +123,33 @@ public class OrdenDaoImpl implements OrdenDao {
         return null;
     }
 
+    @Override
+    public List<Orden> obtenerOrdenesPorPedido(int pedidoId) throws DaoException {
+        List<Orden> ordenes = new ArrayList<>();
+        String sql = "SELECT o.*, p.nombre AS nombreProducto "
+                + "FROM orden o "
+                + "JOIN producto p ON o.producto_id = p.id "
+                + "WHERE o.pedido_id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pedidoId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Orden orden = new Orden();
+                    orden.setId(rs.getInt("id"));
+                    orden.setCantidad(rs.getInt("cantidad"));
+                    orden.setSubtotal(rs.getDouble("subtotal"));
+                    orden.setNombreProducto(rs.getString("nombreProducto")); // debes tener este atributo
+                    ordenes.add(orden);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException("Error al obtener las órdenes del pedido", e);
+        }
+
+        return ordenes;
+    }
+
 }

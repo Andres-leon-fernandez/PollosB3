@@ -53,4 +53,26 @@ public class OrdenServiceImpl implements OrdenService {
 
     }
 
+    @Override
+    public String obtenerOrdenesPorPedido(int pedidoId) throws DaoException {
+        List<Orden> ordenes = dao.obtenerOrdenesPorPedido(pedidoId); // CAMBIADO: ordenDao ? dao
+        StringBuilder descripcion = new StringBuilder();
+
+        for (Orden o : ordenes) {
+            descripcion.append(o.getNombreProducto())
+                    .append(" x")
+                    .append(o.getCantidad())
+                    .append(" (S/ ")
+                    .append(o.getSubtotal())
+                    .append("), ");
+        }
+
+        // Eliminar la coma final
+        if (descripcion.length() > 0) {
+            descripcion.setLength(descripcion.length() - 2);
+        }
+
+        return descripcion.toString();
+    }
+
 }

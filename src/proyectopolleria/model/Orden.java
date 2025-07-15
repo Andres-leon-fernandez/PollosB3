@@ -7,6 +7,7 @@ public class Orden {
     private Integer idPedido;
     private int cantidad;
     private double subtotal;
+    private String nombreProducto;
 
     public Orden() {
     }
@@ -24,6 +25,14 @@ public class Orden {
         this.idPedido = idPedido;
         this.cantidad = cantidad;
         this.subtotal = subtotal;
+    }
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
     public Integer getId() {

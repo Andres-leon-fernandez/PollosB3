@@ -5,11 +5,7 @@ import java.sql.Connection;
 import javax.swing.JOptionPane;
 import proyectopolleria.controller.TrabajadorController;
 import proyectopolleria.seguridad.Autentificador;
-import proyectopolleria.controller.ol.GestionDatosUsuario;
-import proyectopolleria.dao.DaoException;
-import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
 import proyectopolleria.model.Trabajador;
-import proyectopolleria.service.Impl.TrabajadorServiceImpl;
 import proyectopolleria.util.Conexion;
 import proyectopolleria.view.TablaPrincipal;
 
@@ -22,41 +18,21 @@ public class TablaInicio extends javax.swing.JFrame {
 
         initComponents();
         Connection conn = Conexion.getInstancia().getConexion();
-        TrabajadorDaoImpl daoTrabajador = new TrabajadorDaoImpl(conn);
-        TrabajadorServiceImpl srvTrababjador = new TrabajadorServiceImpl(daoTrabajador);
-        ctrl = new TrabajadorController(srvTrababjador);
-    }
-
-    private void cargarUsuariosDesdeCSV() {
-        // Llamar a la clase GestionDatosUsuario para cargar usuarios desde el archivo CSV
-        Object[][] data = GestionDatosUsuario.cargarDatosDesdeCSV("tu_archivo.csv", new String[]{"ID", "Contraseña"});
-
-        // Verificar si hay datos para cargar
-        if (data != null) {
-            for (Object[] row : data) {
-                String id = row[0].toString();
-                String contraseña = row[1].toString();
-                autenticador.agregarUsuario(id, contraseña);
-            }
-        }
+        ctrl = new TrabajadorController(conn);
     }
 
     private void ingresarActionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-            String u = jTextField1.getText();
-            String p = new String(jPasswordField1.getPassword());
-            Trabajador t = ctrl.login(u, p);
-            if (t != null) {
-                JOptionPane.showMessageDialog(this, "Bienvenido!");
-                TablaPrincipal principalFrame = new TablaPrincipal();
-                principalFrame.actualizarTextField(u);
-                this.dispose();
-                principalFrame.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Credenciales inválidas");
-            }
-        } catch (DaoException ex) {
-            JOptionPane.showMessageDialog(this, "Error en login: " + ex.getMessage());
+        String u = jTextField1.getText();
+        String p = new String(jPasswordField1.getPassword());
+        Trabajador t = ctrl.login(u, p);
+        if (t != null) {
+            JOptionPane.showMessageDialog(this, "Bienvenido!");
+            TablaPrincipal principalFrame = new TablaPrincipal();
+            principalFrame.actualizarTextField(u);
+            this.dispose();
+            principalFrame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Credenciales inválidas");
         }
 
     }

@@ -15,4 +15,5 @@ import proyectopolleria.model.Orden;
 public interface OrdenDao extends Dao<Orden, Integer> {
 
     List<Orden> listarPorPedido(int pedidoId) throws DaoException;
+    public List<Orden> obtenerOrdenesPorPedido(int pedidoId) throws DaoException;
 }

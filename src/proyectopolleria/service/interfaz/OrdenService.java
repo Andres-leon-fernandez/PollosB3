@@ -25,4 +25,6 @@ public interface OrdenService {
     List<Orden> listarTodos() throws DaoException;
 
     List<Orden> listarPorPedido(int pedidoId) throws DaoException;
+
+    public String obtenerOrdenesPorPedido(int pedidoId) throws DaoException;
 }

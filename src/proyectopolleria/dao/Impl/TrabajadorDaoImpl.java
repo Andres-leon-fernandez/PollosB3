@@ -28,7 +28,7 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
     final String insert = "INSERT INTO trabajador(password, dni, nombre, correo,telefono,tipo,usuario) VALUES (?, ?, ?, ?, ?,?,?)";
     final String update = "UPDATE trabajador SET password = ?, correo = ?, telefono = ?, tipo = ? WHERE id = ?";
     final String delete = "delete from trabajador where id=?";
-    final String selectAll = "select * from trabajador";
+    final String selectAll = "SELECT id, usuario, dni, nombre, correo, telefono, activo, tipo, disponible FROM trabajador";
     final String selectId = "select * from trabajador where id=?";
 
     @Override
@@ -47,7 +47,7 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("Pueed que no se guardo xd");
             }
-            rs = stat.executeQuery();
+            rs = stat.getGeneratedKeys();
             if (rs.next()) {
                 t.setId(rs.getInt(1));
             } else {
@@ -302,4 +302,43 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
         return list;
     }
 
+    @Override
+    public void actualizarDisponibilidad(int id, boolean disponible) throws DaoException {
+        String sql = "UPDATE trabajador SET disponible = ? WHERE id = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setBoolean(1, disponible);
+            stat.setInt(2, id);
+            if (stat.executeUpdate() == 0) {
+                throw new DaoException("No se actualizó la disponibilidad del trabajador.");
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error al actualizar disponibilidad", e);
+        }
+    }
+
+    @Override
+    public List<Trabajador> listarMozos() throws DaoException {
+        List<Trabajador> todos = listarTodos();
+        List<Trabajador> mozos = new ArrayList<>();
+        for (Trabajador t : todos) {
+            if (t.getTipoTrabajador() == Trabajador.TipoTrabajador.MOZO) {
+                mozos.add(t);
+            }
+        }
+        return mozos;
+    }
+
+    @Override
+    public void eliminarDni(String dni) throws DaoException {
+        String sql = "DELETE FROM trabajador WHERE dni = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setString(1, dni);
+            int rowsAffected = stat.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DaoException("No se encontró un trabajador con ese DNI.");
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("Error al eliminar por DNI", ex);
+        }
+    }
 }

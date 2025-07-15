@@ -7,126 +7,88 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import proyectopolleria.controller.ol.GestionDatosPedido;
+import proyectopolleria.dao.Impl.ClienteDaoImpl;
+import proyectopolleria.dao.Impl.PedidoDaoImpl;
+import proyectopolleria.model.Pedido;
+import proyectopolleria.service.Impl.ClienteServiceImpl;
+import proyectopolleria.service.Impl.PedidoServiceImpl;
+import proyectopolleria.service.interfaz.ClienteService;
+import proyectopolleria.service.interfaz.PedidoService;
+import proyectopolleria.service.interfaz.TrabajadorService;
+import proyectopolleria.util.Conexion;
+import java.sql.Connection;
+import proyectopolleria.dao.DaoException;
+import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
+import proyectopolleria.model.Cliente;
+import proyectopolleria.model.Trabajador;
+import proyectopolleria.service.Impl.TrabajadorServiceImpl;
 
 public class TablaRegistroPedidos extends javax.swing.JFrame {
-    
-    private GestionDatosPedido gestionDatosPedido;
-    private String[][] datos;
+
+    private ClienteService clienteService;
+    private TrabajadorService trabajadorService;
+    private PedidoService pedidoService;
+    private DefaultTableModel model;
 
     public TablaRegistroPedidos() {
         initComponents();
         setLocationRelativeTo(null);
-        // Establece la ruta para guardar los datos o cargar los datos
-        gestionDatosPedido = new GestionDatosPedido("ruta_del_archivo.csv");
 
-        // Cargar datos desde el archivo CSV
-        if (cargarDatosDesdeArchivo()) {
-            // Ordenar los datos por el número de pedido usando Quick Sort
-            quickSort(datos, 0, datos.length - 1);
-            // Mostrar los datos en la tabla
-            mostrarDatosEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "No se pudieron cargar los datos desde el archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        Connection conn = Conexion.getInstancia().getConexion();
+        clienteService = new ClienteServiceImpl(new ClienteDaoImpl(conn));
+        trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(conn));
+        pedidoService = new PedidoServiceImpl(new PedidoDaoImpl(conn));
+
+        model = (DefaultTableModel) jTable1.getModel();
+        cargarPedidosDesdeBD();
+
     }
+
     // Método para cargar los datos desde el archivo CSV
-    private boolean cargarDatosDesdeArchivo() {
-        List<String[]> data = gestionDatosPedido.cargarDatos();// Cargar datos desde el archivo CSV
-        if (data != null && !data.isEmpty()) {
-            datos = new String[data.size()][];// Inicia la matriz de datos con el tamaño requerido
-            datos = data.toArray(datos);// Convertir la lista de datos en una matriz
-            return true;   
-        }
-        return false;
-    }
-    // Método para mostrar los datos en la tabla
-    private void mostrarDatosEnTabla() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); //Obtener el modelo de la tabla
-        model.setRowCount(0); // Limpiar la tabla antes de mostrar nuevos datos
-        for (String[] row : datos) {
-            model.addRow(row);// Agrega cada fila de datos al modelo de la tabla
-        }
-    }
-    // Método para ordenar los datos usando Quick Sort
-    private void quickSort(String[][] array, int low, int high) {
-        if (low < high) {
-            int pi = partition(array, low, high);// Obtener el índice del pivote
-            quickSort(array, low, pi - 1);// Ordenar recursivamente los elementos antes del pivote
-            quickSort(array, pi + 1, high);// Ordenar recursivamente los elementos después del pivote
-        }
-    }
-    // Método auxiliar para particionar la Matriz en Quick Sort
-    private int partition(String[][] array, int low, int high) {
-        String[] pivot = array[high];// Seleccionar el último elemento como pivote
-        int i = (low - 1);// Índice del elemento más pequeño
-        for (int j = low; j < high; j++) {
-            if (array[j][2].compareTo(pivot[2]) < 0) { // Si el elemento actual es menor o igual al pivote
-                i++;// Incrementar el índice del elemento más pequeño
-                String[] temp = array[i];  // Intercambiar array[i] y array[j]
-                array[i] = array[j];
-                array[j] = temp;
-            }
-        }
-        // Intercambiar array[i + 1] y array[high]
-        String[] temp = array[i + 1];
-        array[i + 1] = array[high];
-        array[high] = temp;
-        // Retornar el índice del pivote después del particionamiento
-        return i + 1;
-    }
-    // Método para buscar un registro por el número de pedido usando búsqueda binaria
-    private int buscarPorNumeroPedido(String[][] array, String numeroPedido) {
-    int left = 0;// Índice del extremo izquierdo
-    int right = array.length - 1;// Índice del extremo derecho
-    while (left <= right) {
-        int mid = left + (right - left) / 2;// Calcular el índice del elemento medio
-        int cmp = array[mid][2].compareTo(numeroPedido);// Comparar el número de pedido con el elemento medio
-        if (cmp == 0) {
-            return mid;// Retornar el índice del elemento si se encuentra el número de pedido
-        }
-        if (cmp < 0) {// Si el número de pedido es mayor, buscar en la mitad derecha
-            left = mid + 1;
-        } else {// Si el número de pedido es menor, buscar en la mitad izquierda
-            right = mid - 1;
-        }
-    }
-    return -1;// Retornar -1 si el número de pedido no se encuentra en la matriz
-    }
-    // Método para eliminar el registro del archivo CSV
-    private void eliminarRegistroCSV(int rowIndex) {
-    try {
-        // Cargar todos los datos desde el archivo CSV
-        List<String[]> data = gestionDatosPedido.cargarDatos();
-        
-        // Eliminar el registro correspondiente al índice rowIndex
-        data.remove(rowIndex);
-        
-        // Sobrescribir el archivo CSV con los datos actualizados
-        guardarDatosEnArchivo(data);
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error al eliminar el registro del archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
-    }
-    // Método para guardar los datos en el archivo CSV
-    private void guardarDatosEnArchivo(List<String[]> data) {
-    try (Writer writer = new FileWriter("ruta_del_archivo.csv")) {
-        for (String[] rowData : data) {
-            StringBuilder line = new StringBuilder();
-            for (int i = 0; i < rowData.length; i++) {
-                line.append(rowData[i]);
-                if (i < rowData.length - 1) {
-                    line.append(",");
+    private void cargarPedidosDesdeBD() {
+        try {
+            List<Pedido> pedidos = pedidoService.listarTodos();
+            model.setRowCount(0); // Limpiar tabla
+
+            for (Pedido p : pedidos) {
+                Cliente cliente = clienteService.obtenerPorId(p.getIdCliente());
+                if (cliente == null) {
+                    continue;
                 }
+
+                String nombreCliente = cliente.getNombre();
+                String dniCliente = cliente.getDni();
+                String nombreTrabajador = "N/A";
+
+                if (p.getTipo() == Pedido.tipoPedido.SALON && p.getIdMOZO() != null) {
+                    Trabajador mozo = trabajadorService.obtenerPorId(p.getIdMOZO());
+                    if (mozo != null) {
+                        nombreTrabajador = mozo.getNombre();
+                    }
+                } else if (p.getTipo() == Pedido.tipoPedido.DELIVERY && p.getIdDELIVERY() != null) {
+                    Trabajador delivery = trabajadorService.obtenerPorId(p.getIdDELIVERY());
+                    if (delivery != null) {
+                        nombreTrabajador = delivery.getNombre();
+                    }
+                }
+
+                Object[] row = {
+                    p.getId(),
+                    nombreCliente,
+                    p.getFechaHora(),
+                    dniCliente,
+                    nombreTrabajador,
+                    p.getTipo().toString(),
+                    "-", // Cantidad o descripción de productos: implementar luego
+                    p.getTotal()
+                };
+                model.addRow(row);
             }
-            line.append("\n");
-            writer.write(line.toString());
+        } catch (DaoException e) {
+            JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage());
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error al guardar datos en el archivo CSV.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
+
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -148,15 +110,22 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Usuario", "Fecha del pedido", "N° Pedido", "Mesa", "Cliente", "DNI", "Mozo", "Cod. Producto", "Descripcion", "Cant", "Total"
+                "N° Pedido", "Cliente", "Fecha", "DNI", "Trabajador", "Tipo", "Cant", "Total"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -250,27 +219,8 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    // Botón de buscar
-    String numeroPedido = jTextField1.getText().trim();
-    if (!numeroPedido.isEmpty()) {
-        int index = buscarPorNumeroPedido(datos, numeroPedido);
-        if (index != -1) {
-            // Limpiar la tabla antes de mostrar los resultados de la búsqueda
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            model.setRowCount(0);
-            
-            // Mostrar solo la fila correspondiente al resultado de la búsqueda
-            model.addRow(datos[index]);
-            
-            // Seleccionar la fila correspondiente en la tabla
-            jTable1.setRowSelectionInterval(0, 0);
-            jTable1.scrollRectToVisible(jTable1.getCellRect(0, 0, true));
-        } else {
-            JOptionPane.showMessageDialog(this, "Número de pedido no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    } else {
-        JOptionPane.showMessageDialog(this, "Por favor, ingrese un número de pedido.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
+        // Botón de buscar
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -278,22 +228,10 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    // Botón de eliminar registro
-    int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow != -1) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        // Iterar sobre cada columna de la fila y establecerla como una cadena vacía
-        for (int i = 0; i < model.getColumnCount(); i++) {
-            model.setValueAt("", selectedRow, i);
-        }
-        
-        // También eliminar el registro del archivo CSV
-        eliminarRegistroCSV(selectedRow);
-    } else {
-        JOptionPane.showMessageDialog(this, "Por favor, seleccione un registro para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
+        // Botón de eliminar registro
+
     }//GEN-LAST:event_jButton1ActionPerformed
-    
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -312,16 +250,24 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaRegistroPedidos.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

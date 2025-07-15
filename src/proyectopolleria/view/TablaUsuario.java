@@ -1,71 +1,46 @@
 package proyectopolleria.view;
 
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import proyectopolleria.controller.ol.GestionDatosUsuario;
-
+import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
+import proyectopolleria.model.Trabajador;
+import proyectopolleria.service.Impl.TrabajadorServiceImpl;
+import proyectopolleria.service.interfaz.TrabajadorService;
+import proyectopolleria.util.Conexion;
+import java.sql.Connection;
 
 public class TablaUsuario extends javax.swing.JFrame {
-    
-    
-    public TablaUsuario() {
-        initComponents();
-        setLocationRelativeTo(null);
-        cargarDatosDesdeCSV();
-        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    // Obtener datos de la fila seleccionada
-                    int selectedRow = jTable1.getSelectedRow();
-                    if (selectedRow != -1) {
-                        String id = jTable1.getValueAt(selectedRow, 0).toString();
-                        String contraseña = jTable1.getValueAt(selectedRow, 1).toString();
 
-                        // Mostrar datos en los campos de texto
-                        jTextField1.setText(id);
-                        jTextField2.setText(contraseña);
-                    }
-                }
-            }
-        });
-        
-    }
-    private void cargarDatosDesdeCSV() {
-        // Llamar a la clase GestionDatosUsuario para cargar datos desde el archivo CSV
-        Object[][] data = GestionDatosUsuario.cargarDatosDesdeCSV("tu_archivo.csv", new String[]{"ID", "Contraseña"});
+    private DefaultTableModel model;
+    private TrabajadorService trabajadorService;
+    private Connection conn;
 
-        // Verificar si hay datos para cargar
-        if (data != null) {
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-
-            // Limpiar la tabla antes de cargar nuevos datos
-            model.setRowCount(0);
-
-            // Agregar los datos a la tabla
-            for (Object[] row : data) {
+    private void cargarUsuariosDesdeBD() {
+        try {
+            List<Trabajador> mozos = trabajadorService.listarUsuarios();
+            for (Trabajador mozo : mozos) {
+                Object[] row = {
+                    mozo.getUser(),
+                    mozo.getPassword()
+                };
                 model.addRow(row);
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error cargando usuarios desde BD: " + e.getMessage());
         }
     }
-    private void saveDataToCSV(DefaultTableModel model) {
-        int rowCount = model.getRowCount();
-        int colCount = model.getColumnCount();
-        Object[][] data = new Object[rowCount][colCount];
 
-        // Obtener datos
-        for (int i = 0; i < rowCount; i++) {
-        for (int j = 0; j < colCount; j++) {
-            data[i][j] = model.getValueAt(i, j);
-        }
-        }
-
-        // Llamar a la clase GestionDatosUsuario para escribir en el archivo CSV
-        GestionDatosUsuario.guardarDatosCSV("tu_archivo.csv", new String[]{"ID", "Contraseña"}, data);
+    public TablaUsuario() {
+        initComponents();
+        model = (DefaultTableModel) jTable1.getModel();
+        trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(Conexion.getInstancia().getConexion()));
+        cargarUsuariosDesdeBD();
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -92,9 +67,17 @@ public class TablaUsuario extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Contraseña"
+                "User", "Contraseña"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setText("Agregar");
@@ -212,43 +195,11 @@ public class TablaUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String id = jTextField1.getText();
-        String contraseña = jTextField2.getText();
 
-    // Verificar si ambos campos están llenos
-    if (!id.isEmpty() && !contraseña.isEmpty()) {
-        // Agregar los datos a la tabla
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.addRow(new Object[]{id, contraseña});
-
-        // Limpiar los JTextField después de agregar los datos
-        jTextField1.setText("");
-        jTextField2.setText("");
-
-        // Guardar en el archivo CSV
-        saveDataToCSV(model);
-    } else {
-        // Mostrar un mensaje de error si algún campo está vacío
-        JOptionPane.showMessageDialog(this, "Ambos campos deben ser completusuados", "Error", JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow != -1) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.removeRow(selectedRow);
 
-        // Limpiar los JTextField después de borrar la fila
-        jTextField1.setText("");
-        jTextField2.setText("");
-
-        // Guardar en el archivo CSV después de borrar
-        saveDataToCSV(model);
-    } else {
-        // Mostrar un mensaje si no se ha seleccionado ninguna fila
-        JOptionPane.showMessageDialog(this, "Seleccione una fila para borrar", "Error", JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
