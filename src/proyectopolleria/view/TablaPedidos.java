@@ -10,10 +10,25 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import proyectopolleria.controller.ol.GestionDatosPedido;
+import proyectopolleria.model.Orden;
+import proyectopolleria.service.Impl.ProductoServiceImpl;
+import proyectopolleria.service.interfaz.ClienteService;
+import proyectopolleria.service.interfaz.OrdenService;
+import proyectopolleria.service.interfaz.PedidoService;
+import proyectopolleria.service.interfaz.ProductoService;
+import proyectopolleria.service.interfaz.TrabajadorService;
 import proyectopolleria.util.MenuPolleria;
 
 
 public class TablaPedidos extends javax.swing.JFrame {
+
+    private ProductoService srvProducto;
+    private PedidoService srvPedido;
+    private ClienteService svrCliente;
+    private OrdenService svrOrden;
+    private TrabajadorService svrTrabajador;
+    
+    private List<Orden> lisOrden;
     
     private MenuPolleria menu;
     private static int contadorPedidos = 0;
@@ -25,6 +40,10 @@ public class TablaPedidos extends javax.swing.JFrame {
         initComponents();
         jPanel1.setOpaque(false);
         setLocationRelativeTo(null);
+        
+        this.
+        
+        
         contadorPedidos = NumeroPedidoManager.cargarNumeroPedido();
         // Crea una instancia de la clase MenuPolleria
         menu = new MenuPolleria();

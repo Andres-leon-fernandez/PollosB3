@@ -4,10 +4,23 @@
  */
 package proyectopolleria.service.interfaz;
 
+import java.util.List;
+import proyectopolleria.dao.DaoException;
+import proyectopolleria.model.Pedido;
+
 /**
  *
  * @author Andres
  */
-public class PedidoService {
-    
+public interface PedidoService {
+
+    void registrarPedido(Pedido p) throws DaoException;
+
+    void actualizarPedido(Pedido p) throws DaoException;
+
+    void eliminarPedido(Pedido p) throws DaoException;
+
+    Pedido obtenerPorId(int id) throws DaoException;
+
+    List<Pedido> listarTodos() throws DaoException;
 }

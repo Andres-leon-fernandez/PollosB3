@@ -11,11 +11,9 @@ import proyectopolleria.util.Conexion;
 public class ClienteDaoImpl implements ClienteDao {
 
     private Connection conn;
-    private final String selectDni;
 
-    public ClienteDaoImpl(Connection conn, String selectDni) {
+    public ClienteDaoImpl(Connection conn) {
         this.conn = conn;
-        this.selectDni = "select * from cliente where dni=?";
     }
 
     private static final String INSERT = "INSERT INTO cliente(dni, nombre, telefono, direccion, referencia) VALUES (?, ?, ?, ?, ?)";

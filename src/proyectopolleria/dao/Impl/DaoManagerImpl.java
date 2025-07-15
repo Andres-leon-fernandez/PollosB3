@@ -7,13 +7,12 @@ import proyectopolleria.util.Conexion;
 public class DaoManagerImpl implements DaoManager {
 
     private Connection conn;
-    
 
-    private ClienteDao clienteDao = null;//ya esta
+    private ClienteDao clienteDao = null;
     private AlmacenMovimientoDao almacenMovimientoDao = null;
     private ComprobanteDao comprobanteDao = null;
     private DetalleRecetaDao detalleRecetaDao = null;
-    private InsumoDao insumoDao = null;//ya esta
+    private InsumoDao insumoDao = null;
     private OrdenDao ordenDao = null;
     private PedidoDao pedidoDao = null;
     private ProductoDao productoDao = null;
@@ -36,13 +35,13 @@ public class DaoManagerImpl implements DaoManager {
         }
     }
 
-//    @Override
-//    public AlmacenMovimientoDao getAlmacenMovimientoDao() {
-//        if (almacenMovimientoDao == null) {
-//            almacenMovimientoDao = new AlmacenMovimientoDaoImpl(conn);
-//        }
-//        return almacenMovimientoDao;
-//    }
+    @Override
+    public AlmacenMovimientoDao getAlmacenMovimientoDao() {
+        if (almacenMovimientoDao == null) {
+            almacenMovimientoDao = new AlmacenMovimientoDaoImpl(conn);
+        }
+        return almacenMovimientoDao;
+    }
 
     @Override
     public ClienteDao getClienteDao() {
@@ -52,21 +51,21 @@ public class DaoManagerImpl implements DaoManager {
         return clienteDao;
     }
 
-//    @Override
-//    public ComprobanteDao getcComprobanteDao() {
-//        if (comprobanteDao == null) {
-//            comprobanteDao = new ComprobanteDaoImpl(conn);
-//        }
-//        return comprobanteDao;
-//    }
+    @Override
+    public ComprobanteDao getComprobanteDao() {
+        if (comprobanteDao == null) {
+            comprobanteDao = new ComprobanteDaoImpl(conn);
+        }
+        return comprobanteDao;
+    }
 
-//    @Override
-//    public DetalleRecetaDao getDetalleRecetaDao() {
-//        if (detalleRecetaDao == null) {
-//            detalleRecetaDao = new DetalleRecetaDaoImpl(conn);
-//        }
-//        return detalleRecetaDao;
-//    }
+    @Override
+    public DetalleRecetaDao getDetalleRecetaDao() {
+        if (detalleRecetaDao == null) {
+            detalleRecetaDao = new DetalleRecetaDaoImpl(conn);
+        }
+        return detalleRecetaDao;
+    }
 
     @Override
     public InsumoDao getInsumoDao() {
@@ -76,21 +75,21 @@ public class DaoManagerImpl implements DaoManager {
         return insumoDao;
     }
 
-//    @Override
-//    public OrdenDao getOrdenDao() {
-//        if (ordenDao == null) {
-//            ordenDao = new OrdenDaoImpl(conn);
-//        }
-//        return ordenDao;
-//    }
-//
-//    @Override
-//    public PedidoDao getPedidoDao() {
-//        if (pedidoDao == null) {
-//            pedidoDao = new PedidoDaoImpl(conn);
-//        }
-//        return pedidoDao;
-//    }
+    @Override
+    public OrdenDao getOrdenDao() {
+        if (ordenDao == null) {
+            ordenDao = new OrdenDaoImpl(conn);
+        }
+        return ordenDao;
+    }
+
+    @Override
+    public PedidoDao getPedidoDao() {
+        if (pedidoDao == null) {
+            pedidoDao = new PedidoDaoImpl(conn);
+        }
+        return pedidoDao;
+    }
 
     @Override
     public ProductoDao getProductoDao() {
@@ -108,13 +107,13 @@ public class DaoManagerImpl implements DaoManager {
         return proveedorDao;
     }
 
-//    @Override
-//    public RecetaDao getRecetaDao() {
-//        if (recetaDao == null) {
-//            recetaDao = new RecetaDaoImpl(conn);
-//        }
-//        return recetaDao;
-//    }
+    @Override
+    public RecetaDao getRecetaDao() {
+        if (recetaDao == null) {
+            recetaDao = new RecetaDaoImpl(conn);
+        }
+        return recetaDao;
+    }
 
     @Override
     public TrabajadorDao getTrabajadorDao() {

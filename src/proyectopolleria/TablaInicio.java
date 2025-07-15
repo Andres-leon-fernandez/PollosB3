@@ -22,9 +22,9 @@ public class TablaInicio extends javax.swing.JFrame {
 
         initComponents();
         Connection conn = Conexion.getInstancia().getConexion();
-        TrabajadorDaoImpl dao = new TrabajadorDaoImpl(conn);
-        TrabajadorServiceImpl srv = new TrabajadorServiceImpl(dao);
-        ctrl = new TrabajadorController(srv);
+        TrabajadorDaoImpl daoTrabajador = new TrabajadorDaoImpl(conn);
+        TrabajadorServiceImpl srvTrababjador = new TrabajadorServiceImpl(daoTrabajador);
+        ctrl = new TrabajadorController(srvTrababjador);
     }
 
     private void cargarUsuariosDesdeCSV() {

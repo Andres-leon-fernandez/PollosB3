@@ -13,7 +13,8 @@ import proyectopolleria.model.Producto;
  * @author Andres
  */
 public interface ProductoService {
-     void registrarProducto( Producto pro) throws DaoException;
+
+    void registrarProducto(Producto pro) throws DaoException;
 
     void actualizarProducto(Producto pro) throws DaoException;
 
