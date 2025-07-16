@@ -72,4 +72,9 @@ public class Producto {
         this.activo = activo;
     }
 
+    @Override
+    public String toString() {
+        return descripcion;
+    }
+
 }

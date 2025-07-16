@@ -1,5 +1,6 @@
 package proyectopolleria.view;
 
+import java.awt.event.ItemEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
@@ -10,7 +11,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import proyectopolleria.controller.ol.GestionDatosPedido;
+import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Orden;
+import proyectopolleria.model.Trabajador;
 import proyectopolleria.service.Impl.ProductoServiceImpl;
 import proyectopolleria.service.interfaz.ClienteService;
 import proyectopolleria.service.interfaz.OrdenService;
@@ -18,152 +21,101 @@ import proyectopolleria.service.interfaz.PedidoService;
 import proyectopolleria.service.interfaz.ProductoService;
 import proyectopolleria.service.interfaz.TrabajadorService;
 import proyectopolleria.util.MenuPolleria;
-
+import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import proyectopolleria.dao.Impl.ProductoDaoImpl;
+import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
+import proyectopolleria.model.Producto;
+import proyectopolleria.service.Impl.TrabajadorServiceImpl;
+import proyectopolleria.util.Conexion;
 
 public class TablaPedidos extends javax.swing.JFrame {
-
-    private ProductoService srvProducto;
-    private PedidoService srvPedido;
-    private ClienteService svrCliente;
-    private OrdenService svrOrden;
-    private TrabajadorService svrTrabajador;
     
-    private List<Orden> lisOrden;
-    
-    private MenuPolleria menu;
-    private static int contadorPedidos = 0;
-    private String usuario;
-    private String fechaHora;
-    private GestionDatosPedido gestionDatos;
+    private DefaultTableModel model;
+    private TrabajadorService trabajadorService;
+    private ProductoService productoService;
+    private Connection conn;
+    private Producto operaciones;
     
     public TablaPedidos(String usuario, String fechaHora) {
         initComponents();
-        jPanel1.setOpaque(false);
-        setLocationRelativeTo(null);
-        
-        this.
-        
-        
-        contadorPedidos = NumeroPedidoManager.cargarNumeroPedido();
-        // Crea una instancia de la clase MenuPolleria
-        menu = new MenuPolleria();
-        
-        //Asigna valores para fecha y hora
-        this.usuario = usuario;
-        this.fechaHora = fechaHora;
-        jTextField1.setText(this.usuario);
-        jTextField2.setText(this.fechaHora);
-        
-        for (MenuPolleria.Producto producto : menu.getAllItems()) {
-            jComboBox3.addItem(producto.getNombre());
-        }  
-        jComboBox3.addActionListener((java.awt.event.ActionEvent evt) -> {
-            jComboBox3ActionPerformed(evt);
-        });    
-        
-        jTextField3.setText(String.valueOf(contadorPedidos));
-        
-        gestionDatos = new GestionDatosPedido("ruta_del_archivo.csv");
-        
-        List<String> nombresMozos = cargarNombresMozos("mozos.csv");
-        for (String nombre : nombresMozos) {
-        jComboBox2.addItem(nombre);
-        }
+        model = (DefaultTableModel) jTable1.getModel();
+        trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(Conexion.getInstancia().getConexion()));
+        productoService = new ProductoServiceImpl(new ProductoDaoImpl(Conexion.getInstancia().getConexion()));
+        cargarMozosEnComboBox();
+        cargarProductosEnComboBox();
     }
-    public static List<String> cargarNombresMozos(String csvFile) {
-    List<String> nombresMozos = new ArrayList<>();
-    try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] data = line.split(",");
-            if (data.length == 3) {
-                String apellidos = data[0];
-                String nombres = data[1];
-                String dni = data[2];
-                // Agregar solo el nombre a la lista
-                nombresMozos.add(nombres);
+    
+    private void cargarMozosEnComboBox() {
+        try {
+            List<Trabajador> mozos = trabajadorService.listarMozos();
+            
+            jComboBox2.removeAllItems();
+            
+            jComboBox2.addItem("Seleccione un mozo...");
+            
+            for (Trabajador mozo : mozos) {
+                jComboBox2.addItem(mozo.getUser());
             }
+            
+        } catch (DaoException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar mozos: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (IOException e) {
-        e.printStackTrace();
     }
-    return nombresMozos;
-}   
-    public class NumeroPedidoManager {
-    private static final String NUMERO_PEDIDO_FILE = "numero_pedido.txt";
+    
+    private void cargarProductosEnComboBox() {
+        try {
+            List<Producto> listaProductos = productoService.listarTodos();
+            
+            jComboBox3.removeAllItems();
+            jComboBox3.addItem("Seleccione un producto");
+            
+            for (Producto producto : listaProductos) {
+                jComboBox3.addItem(producto.getDescripcion());
+            }
+            
+        } catch (DaoException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private Producto extracciondecombo() throws Exception {
+        Producto p = new Producto();
+        try {
+            List<Producto> listaProductos = productoService.listarTodos();
+            Object seleccionado = jComboBox3.getSelectedItem();
+            
+            for (Producto producto : listaProductos) {
+                if (producto.getDescripcion().equals(seleccionado)) {
+                    return producto;
+                }
+            }
 
-     public static int cargarNumeroPedido() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(NUMERO_PEDIDO_FILE))) {
-            String numeroPedidoStr = reader.readLine();
-            return Integer.parseInt(numeroPedidoStr);
-        } catch (IOException | NumberFormatException e) {
-            // En caso de error o si el archivo no existe, se devuelve 0
-            return 0;
+            // Si no se encuentra, devuelve null o lanza excepción si prefieres
+            return null;
+            
+        } catch (DaoException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+        return null;
+    }
+    
+    double calcular(Producto p) {
+        double precio;
+        int cantidad = Integer.valueOf(jTextField7.getText());
+        precio = p.getPrecio() * cantidad;
+        return precio;
     }
 
-    public static void guardarNumeroPedido(int numeroPedido) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(NUMERO_PEDIDO_FILE))) {
-            writer.write(String.valueOf(numeroPedido));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
     //Metodo para guardar los datos del pedido
-    private void grabarDatos() {
-        // Obtener datos de los componentes
-        String idusuario = jTextField1.getText();
-        String fecha = jTextField2.getText();
-        String npedido = jTextField3.getText();
-        String mesa = (String) jComboBox1.getSelectedItem();
-        String cliente = jTextField4.getText();
-        String dni = jTextField5.getText();
-        String mozo = (String) jComboBox2.getSelectedItem();
-        String codproducto = jTextField6.getText();
-        String descripcion = (String) jComboBox3.getSelectedItem();
-        String cantidad = jTextField7.getText();
-        String total = jTextField9.getText();
-
-        // Validar datos
-        if (cliente.trim().isEmpty() || !dni.matches("\\d{8}") || descripcion.equals("Elija un producto")) {
-        JOptionPane.showMessageDialog(this, "Ingrese correctamente los datos del cliente y seleccione un producto.", "No registrado", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // Crear un arreglo con los datos a guardar en el archivo CSV
-    String[] rowData = {idusuario, fecha, npedido, mesa, cliente, dni, mozo, codproducto, descripcion, cantidad, total};
-
-    // Guardar los datos en el archivo CSV
-    List<String[]> data = new ArrayList<>();
-    data.add(rowData);
-    gestionDatos.guardarDatos(data);
-
-    // Incrementar el contador de pedidos
-    contadorPedidos++;
-    
-    // Actualizar el número de pedido en la interfaz gráfica
-    jTextField3.setText(String.valueOf(contadorPedidos));
-
-    JOptionPane.showMessageDialog(this, "Pedido registrado exitosamente.", "Registrado", JOptionPane.INFORMATION_MESSAGE);
-}
-    
-    public String getUsuario() {
-        return usuario;
-    }
-        
     //Calcula la suma se los valores
-    private void updateTotal() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        double total = 0;
-        for (int i = 0; i < model.getRowCount(); i++) {
-        total += Double.parseDouble(model.getValueAt(i, 3).toString()); 
-    }
-        
-    //Muestra la suma de los importes que estan agregados en la tabla
-    jTextField9.setText(String.format("%.2f", total));
-}
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -201,6 +153,7 @@ public class TablaPedidos extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         jTextField5 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
 
         jPasswordField1.setText("jPasswordField1");
@@ -285,13 +238,19 @@ public class TablaPedidos extends javax.swing.JFrame {
         });
         jPanel1.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, 90, -1));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Elija un producto" }));
+        jComboBox3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox3ItemStateChanged(evt);
+            }
+        });
         jComboBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox3ActionPerformed(evt);
             }
         });
         jPanel1.add(jComboBox3, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 320, 190, -1));
+
+        jTextField7.setText("1");
         jPanel1.add(jTextField7, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 360, 90, -1));
 
         jTextField8.setEditable(false);
@@ -361,21 +320,29 @@ public class TablaPedidos extends javax.swing.JFrame {
         jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 410, -1, -1));
 
         jLabel6.setText("Cliente:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 60, 48, -1));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 90, 48, -1));
 
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
             }
         });
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 90, 140, -1));
+        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, 140, -1));
 
         jLabel15.setText("Nombre:");
-        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 90, -1, -1));
-        jPanel1.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 120, 117, -1));
+        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 120, -1, -1));
+        jPanel1.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 140, -1));
 
         jLabel7.setText("DNI:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 120, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 150, -1, -1));
+
+        jButton5.setText("prueba");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 300, -1, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 830, 760));
 
@@ -399,13 +366,7 @@ public class TablaPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField8ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-    DefaultTableModel model = (DefaultTableModel) jTable1.getModel(); // Obtener referencia al modelo de la tabla
-    int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow != -1) {
-        model.removeRow(selectedRow);
-        //Llama al metodo para calcular la suma
-        updateTotal();
-    }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -417,16 +378,8 @@ public class TablaPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField9ActionPerformed
 
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
-    
-        String nombreSeleccionado = (String) jComboBox3.getSelectedItem();
-        for (MenuPolleria.Producto producto : menu.getAllItems()) {
-            if (producto.getNombre().equals(nombreSeleccionado)) {
-                jTextField6.setText(producto.getCodigo());
-                jTextField8.setText(String.valueOf(producto.getPrecio()));
-                break;
-            }
-        }
-                      
+        
+
     }//GEN-LAST:event_jComboBox3ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
@@ -434,54 +387,7 @@ public class TablaPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-    // Obtener datos del formulario
-    String pedidoNumber = jTextField3.getText();
-    String descripcion = (String) jComboBox3.getSelectedItem();
-    String cantidadStr = jTextField7.getText();
-    String importeStr = jTextField8.getText();
-    String clienteNombre = jTextField4.getText();
-    String dni = jTextField5.getText();
 
-    // Validar si la cantidad es numérica y positiva
-    try {
-        int cantidad = Integer.parseInt(cantidadStr);
-        if (cantidad <= 0) {
-            JOptionPane.showMessageDialog(this, "La cantidad debe ser un número entero positivo.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Validar que el cliente tenga un nombre
-        if (clienteNombre.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el nombre del cliente.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        //verifica que el dni tenga 8 digitos
-        if (!dni.matches("\\d{8}")) {
-            JOptionPane.showMessageDialog(this, "El DNI debe tener exactamente 8 dígitos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Calcular el precio multiplicando la cantidad por el importe
-        double importe = Double.parseDouble(importeStr);
-        double precio = cantidad * importe;
-
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-
-        // Limpiar filas vacías en la tabla
-        for (int i = model.getRowCount() - 1; i >= 0; i--) {
-            if (model.getValueAt(i, 0) == null || model.getValueAt(i, 0).toString().isEmpty()) {
-                model.removeRow(i);
-            }
-        }
-
-        // Agregar nueva fila con los datos calculados
-        model.addRow(new Object[]{pedidoNumber, descripcion, cantidadStr, String.format("%.2f", precio)});
-        
-        //Llama a la funcion que calcula la suma total
-        updateTotal();
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "La cantidad debe ser un número entero válido.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -493,27 +399,38 @@ public class TablaPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        grabarDatos();
-        NumeroPedidoManager.guardarNumeroPedido(contadorPedidos);
-        contadorPedidos++;
-        // Limpiar la tabla
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
-        jComboBox1.setSelectedIndex(0);
-        jComboBox2.setSelectedIndex(0);
-        jComboBox3.setSelectedIndex(0);
-        jTextField4.setText("");
-        jTextField5.setText("");
-        jTextField6.setText("");
-        jTextField7.setText("");
-        jTextField7.setText("");
-        jTextField8.setText("");
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        String nombreMozoSeleccionado = (String) jComboBox2.getSelectedItem();
-        JOptionPane.showMessageDialog(this, "Mozo seleccionado: " + nombreMozoSeleccionado, "Mozo seleccionado", JOptionPane.INFORMATION_MESSAGE);
+
     }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jComboBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox3ItemStateChanged
+
+    }//GEN-LAST:event_jComboBox3ItemStateChanged
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        try {
+            double pre = extracciondecombo().getPrecio();
+            
+            String textoCantidad = jTextField7.getText().trim();
+            
+            if (textoCantidad.isEmpty()) {
+                throw new NumberFormatException("La cantidad está vacía.");
+            }
+            
+            int cantidad = Integer.parseInt(textoCantidad);
+            
+            if (cantidad <= 0) {
+                throw new NumberFormatException("La cantidad debe ser mayor a 0.");
+            }
+            jTextField6.setText(String.valueOf(extracciondecombo().getId()));
+            jTextField8.setText(String.valueOf(pre * cantidad));
+        } catch (Exception ex) {
+            Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -558,6 +475,7 @@ public class TablaPedidos extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
