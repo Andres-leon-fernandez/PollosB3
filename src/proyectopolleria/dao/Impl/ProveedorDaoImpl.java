@@ -19,7 +19,7 @@ public class ProveedorDaoImpl implements ProveedorDao {
     }
 
     final String insert = "INSERT INTO proveedor(nombre, ruc, telefono, direccion,correo) VALUES (?, ?, ?, ?, ?)";
-    final String update = "UPDATE proveedor SET telefono = ?, direccion = ?, correo = ? WHERE id = ?";
+    final String update = "UPDATE proveedores SET nombre=?, telefono=?, direccion=?, correo=? WHERE ruc=?";
     final String delete = "delete from proveedor where id=?";
     final String selectAll = "select * from proveedor";
     final String selectId = "select * from proveedor where id=?";
@@ -35,15 +35,16 @@ public class ProveedorDaoImpl implements ProveedorDao {
             stat.setString(3, t.getTelefono());
             stat.setString(4, t.getDireccion());
             stat.setString(5, t.getCorreo());
-            if (stat.executeUpdate() == 0) {
-                throw new DaoException("Pueed que no se guardo xd");
+            int affectedRows = stat.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DaoException("No se pudo guardar el proveedor");
             }
-            rs = stat.executeQuery();
-            /*if (rs.next()) {
+            rs = stat.getGeneratedKeys();
+            if (rs.next()) {
                 t.setId(rs.getInt(1));
             } else {
                 throw new DaoException("error xd");
-            }*/
+            }
         } catch (SQLException ex) {
             throw new DaoException("error xd", ex);
         } finally {
@@ -69,14 +70,15 @@ public class ProveedorDaoImpl implements ProveedorDao {
         PreparedStatement stat = null;
         try {
             stat = conn.prepareStatement(update);
-            stat.setString(1, t.getTelefono());
-            stat.setString(2, t.getDireccion());
-            stat.setString(3, t.getCorreo());
-            stat.setInt(5, t.getId());
-            if (stat.executeUpdate() == 0) {
-                throw new DaoException("puede que no se actualizo xd");
+            stat.setString(1, t.getNombre());
+            stat.setString(2, t.getTelefono());
+            stat.setString(3, t.getDireccion());
+            stat.setString(4, t.getCorreo());
+            stat.setString(5, t.getRuc());
+            int affected = stat.executeUpdate();
+            if (affected == 0) {
+                throw new DaoException("No se encontró proveedor con RUC: " + t.getRuc());
             }
-
         } catch (SQLException ex) {
             throw new DaoException("error en sql", ex);
         } finally {
@@ -125,7 +127,7 @@ public class ProveedorDaoImpl implements ProveedorDao {
         proveedor.setId(rs.getInt("id"));
         return proveedor;
     }
-    
+
     @Override
     public List<Proveedor> listarTodos() throws DaoException {
         PreparedStatement stat = null;
