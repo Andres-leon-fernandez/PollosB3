@@ -15,14 +15,14 @@ import proyectopolleria.dao.interfaces.ProveedorDao;
 import proyectopolleria.model.Proveedor;
 import proyectopolleria.util.Conexion;
 
-public class TablaProveedor extends javax.swing.JFrame {
+public class TablaInsumo extends javax.swing.JFrame {
 
     private ProveedorService srvproveedor;
     private DaoManagerImpl managerDao;
     private Connection conn;
     private DefaultTableModel model;
 
-    public TablaProveedor() {
+    public TablaInsumo() {
         initComponents();
         model = (DefaultTableModel) ProveedorTabla.getModel();
         conn = Conexion.getInstancia().getConexion();
@@ -97,6 +97,11 @@ public class TablaProveedor extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        ProveedorTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ProveedorTablaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(ProveedorTabla);
 
         jLabel1.setText("Nombre:");
@@ -112,6 +117,12 @@ public class TablaProveedor extends javax.swing.JFrame {
         textNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textNombreActionPerformed(evt);
+            }
+        });
+
+        textCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textCorreoActionPerformed(evt);
             }
         });
 
@@ -171,8 +182,18 @@ public class TablaProveedor extends javax.swing.JFrame {
         jLabel6.setText("Proveedores");
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -236,7 +257,7 @@ public class TablaProveedor extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -265,14 +286,31 @@ public class TablaProveedor extends javax.swing.JFrame {
         pro.setRuc(txtRuc.getText());
         pro.setTelefono(textTelefono.getText());
         pro.setDireccion(txtDireccion.getText());
+        pro.setCorreo(textCorreo.getText());
         try {
             srvproveedor.registrarProveedor(pro);
             model.setRowCount(0);
             cargarTabla();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaProveedor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TablaInsumo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void textCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textCorreoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textCorreoActionPerformed
+
+    private void ProveedorTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProveedorTablaMouseClicked
+
+    }//GEN-LAST:event_ProveedorTablaMouseClicked
 
     private void cargarTabla() {
         try {
@@ -297,7 +335,7 @@ public class TablaProveedor extends javax.swing.JFrame {
                     mensaje,
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(TablaProveedor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TablaInsumo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -318,13 +356,13 @@ public class TablaProveedor extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -332,7 +370,7 @@ public class TablaProveedor extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TablaProveedor().setVisible(true);
+                new TablaInsumo().setVisible(true);
             }
         });
     }

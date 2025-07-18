@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 public class InsumoDaoImpl implements InsumoDao {
 
@@ -26,40 +27,20 @@ public class InsumoDaoImpl implements InsumoDao {
 
     @Override
     public void crear(Insumo t) throws DaoException {
-        PreparedStatement stat = null;
         ResultSet rs = null;
-        try {
-            stat = conn.prepareStatement(insert,stat.RETURN_GENERATED_KEYS);
+        try (PreparedStatement stat = conn.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stat.setString(1, t.getNombre());
             stat.setDouble(2, t.getStock());
-            stat.setString(3, t.getUnidad().name());
-            stat.setInt(4, t.getIdProveedor());
-            if (stat.executeUpdate() == 0) {
-                throw new DaoException("Pueed que no se guardo xd");
-            }
-            rs = stat.getGeneratedKeys();
-            if (rs.next()) {
-                t.setId(rs.getInt(1));
-            } else {
-                throw new DaoException("error xd");
-            }
+            stat.setDouble(3, t.getStockMin());
+            stat.setString(4, t.getUnidad().name());
+            stat.setDouble(5, t.getPrecioUnitario());
+            stat.setInt(6, t.getIdProveedor());
+            stat.executeUpdate();
+
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "error ctmr" + ex);
             throw new DaoException("error xd", ex);
-        } finally {
-            if (stat != null) {
-                try {
-                    stat.close();
-                } catch (SQLException e) {
-                    throw new DaoException("error xd", e);
-                }
-            }
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("error en bd", ex);
-                }
-            }
+
         }
     }
 

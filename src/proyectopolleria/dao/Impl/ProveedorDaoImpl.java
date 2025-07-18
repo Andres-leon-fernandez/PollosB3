@@ -26,42 +26,17 @@ public class ProveedorDaoImpl implements ProveedorDao {
 
     @Override
     public void crear(Proveedor t) throws DaoException {
-        PreparedStatement stat = null;
         ResultSet rs = null;
-        try {
-            stat = conn.prepareStatement(insert, stat.RETURN_GENERATED_KEYS);
+        try (PreparedStatement stat = conn.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stat.setString(1, t.getNombre());
             stat.setString(2, t.getRuc());
             stat.setString(3, t.getTelefono());
             stat.setString(4, t.getDireccion());
             stat.setString(5, t.getCorreo());
-            int affectedRows = stat.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("No se pudo guardar el proveedor");
-            }
-            rs = stat.getGeneratedKeys();
-            if (rs.next()) {
-                t.setId(rs.getInt(1));
-            } else {
-                throw new DaoException("error xd");
-            }
+            stat.executeUpdate();
+
         } catch (SQLException ex) {
             throw new DaoException("error xd", ex);
-        } finally {
-            if (stat != null) {
-                try {
-                    stat.close();
-                } catch (SQLException e) {
-                    throw new DaoException("error xd", e);
-                }
-            }
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("error en bd", ex);
-                }
-            }
         }
     }
 
