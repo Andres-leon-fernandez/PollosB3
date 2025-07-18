@@ -15,14 +15,14 @@ import proyectopolleria.dao.interfaces.ProveedorDao;
 import proyectopolleria.model.Proveedor;
 import proyectopolleria.util.Conexion;
 
-public class TablaInsumo extends javax.swing.JFrame {
+public class TablaProveedores extends javax.swing.JFrame {
 
     private ProveedorService srvproveedor;
     private DaoManagerImpl managerDao;
     private Connection conn;
     private DefaultTableModel model;
 
-    public TablaInsumo() {
+    public TablaProveedores() {
         initComponents();
         model = (DefaultTableModel) ProveedorTabla.getModel();
         conn = Conexion.getInstancia().getConexion();
@@ -292,7 +292,7 @@ public class TablaInsumo extends javax.swing.JFrame {
             model.setRowCount(0);
             cargarTabla();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaInsumo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TablaProveedores.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -335,7 +335,7 @@ public class TablaInsumo extends javax.swing.JFrame {
                     mensaje,
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(TablaInsumo.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TablaProveedores.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -356,21 +356,23 @@ public class TablaInsumo extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TablaInsumo().setVisible(true);
+                new TablaProveedores().setVisible(true);
             }
         });
     }

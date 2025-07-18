@@ -24,81 +24,92 @@ import proyectopolleria.util.MenuPolleria;
 import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import proyectopolleria.dao.Impl.ClienteDaoImpl;
+import proyectopolleria.dao.Impl.OrdenDaoImpl;
 import proyectopolleria.dao.Impl.ProductoDaoImpl;
 import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
+import proyectopolleria.model.Cliente;
+import proyectopolleria.model.Pedido;
 import proyectopolleria.model.Producto;
+import proyectopolleria.service.Impl.ClienteServiceImpl;
+import proyectopolleria.service.Impl.OrdenServiceImpl;
 import proyectopolleria.service.Impl.TrabajadorServiceImpl;
 import proyectopolleria.util.Conexion;
 
 public class TablaPedidos extends javax.swing.JFrame {
-    
+
     private DefaultTableModel model;
     private TrabajadorService trabajadorService;
     private ProductoService productoService;
+    private OrdenService ordenService;
+    private ClienteService clienteService;
     private Connection conn;
     private Producto operaciones;
-    
+
     public TablaPedidos(String usuario, String fechaHora) {
         initComponents();
-        model = (DefaultTableModel) jTable1.getModel();
-        trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(Conexion.getInstancia().getConexion()));
-        productoService = new ProductoServiceImpl(new ProductoDaoImpl(Conexion.getInstancia().getConexion()));
+        model = (DefaultTableModel) OrdenTabla.getModel();
+        trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(conn));
+        productoService = new ProductoServiceImpl(new ProductoDaoImpl(conn));
+        ordenService = new OrdenServiceImpl(new OrdenDaoImpl(conn));
+        clienteService = new ClienteServiceImpl(new ClienteDaoImpl(conn));
         cargarMozosEnComboBox();
         cargarProductosEnComboBox();
     }
-    
+
     private void cargarMozosEnComboBox() {
         try {
             List<Trabajador> mozos = trabajadorService.listarMozos();
-            
+
             jComboBox2.removeAllItems();
-            
+
             jComboBox2.addItem("Seleccione un mozo...");
-            
+
             for (Trabajador mozo : mozos) {
                 jComboBox2.addItem(mozo.getUser());
             }
-            
+
         } catch (DaoException e) {
             JOptionPane.showMessageDialog(this, "Error al cargar mozos: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void cargarProductosEnComboBox() {
         try {
             List<Producto> listaProductos = productoService.listarTodos();
-            
+
             jComboBox3.removeAllItems();
             jComboBox3.addItem("Seleccione un producto");
-            
+
             for (Producto producto : listaProductos) {
                 jComboBox3.addItem(producto.getDescripcion());
             }
-            
+
         } catch (DaoException e) {
             JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private Producto extracciondecombo() throws Exception {
         Producto p = new Producto();
         try {
             List<Producto> listaProductos = productoService.listarTodos();
             Object seleccionado = jComboBox3.getSelectedItem();
-            
+
             for (Producto producto : listaProductos) {
                 if (producto.getDescripcion().equals(seleccionado)) {
+                    System.out.println(producto.getDescripcion());
                     return producto;
                 }
             }
 
             // Si no se encuentra, devuelve null o lanza excepción si prefieres
             return null;
-            
+
         } catch (DaoException e) {
             JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
@@ -106,12 +117,12 @@ public class TablaPedidos extends javax.swing.JFrame {
         }
         return null;
     }
-    
-    double calcular(Producto p) {
-        double precio;
+
+    double calcular(double pre) {
+
         int cantidad = Integer.valueOf(jTextField7.getText());
-        precio = p.getPrecio() * cantidad;
-        return precio;
+
+        return pre * cantidad;
     }
 
     //Metodo para guardar los datos del pedido
@@ -136,24 +147,31 @@ public class TablaPedidos extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        txtIDProducto = new javax.swing.JTextField();
         jComboBox3 = new javax.swing.JComboBox<>();
         jTextField7 = new javax.swing.JTextField();
         jTextField8 = new javax.swing.JTextField();
         panel1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        OrdenTabla = new javax.swing.JTable();
         jLabel13 = new javax.swing.JLabel();
         jTextField9 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        txtNombreCliente = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        txtDni = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        txtTelefono = new javax.swing.JTextField();
+        txtDireccion = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        txtReferencia = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
 
         jPasswordField1.setText("jPasswordField1");
@@ -169,6 +187,11 @@ public class TablaPedidos extends javax.swing.JFrame {
 
         jTextField3.setEditable(false);
         jTextField3.setBackground(new java.awt.Color(204, 204, 204));
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 79, 90, -1));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -229,14 +252,14 @@ public class TablaPedidos extends javax.swing.JFrame {
         jLabel9.setText("Codigo");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 280, -1, -1));
 
-        jTextField6.setEditable(false);
-        jTextField6.setBackground(new java.awt.Color(204, 204, 204));
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        txtIDProducto.setEditable(false);
+        txtIDProducto.setBackground(new java.awt.Color(204, 204, 204));
+        txtIDProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                txtIDProductoActionPerformed(evt);
             }
         });
-        jPanel1.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, 90, -1));
+        jPanel1.add(txtIDProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, 90, -1));
 
         jComboBox3.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -260,6 +283,11 @@ public class TablaPedidos extends javax.swing.JFrame {
                 jTextField8ActionPerformed(evt);
             }
         });
+        jTextField8.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField8KeyReleased(evt);
+            }
+        });
         jPanel1.add(jTextField8, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 400, 90, -1));
 
         panel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Informacion del producto"));
@@ -270,30 +298,42 @@ public class TablaPedidos extends javax.swing.JFrame {
         });
         jPanel1.add(panel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, 520, 190));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        OrdenTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "N° Pedido", "Descripción", "Cantidad", "Precio"
+                "ID Producto", "Descripción", "Cantidad", "Sub total"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false
+            };
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 470, 700, 120));
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(OrdenTabla);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 490, 700, 120));
 
         jLabel13.setText("Total:");
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 610, -1, -1));
+        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 620, -1, -1));
 
         jTextField9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField9ActionPerformed(evt);
             }
         });
-        jPanel1.add(jTextField9, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 610, 130, -1));
+        jPanel1.add(jTextField9, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 620, 130, -1));
 
         jButton2.setText("Borrar item");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -317,32 +357,42 @@ public class TablaPedidos extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 410, -1, -1));
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 420, -1, -1));
 
         jLabel6.setText("Cliente:");
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 90, 48, -1));
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        txtNombreCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                txtNombreClienteActionPerformed(evt);
             }
         });
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, 140, -1));
+        jPanel1.add(txtNombreCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, 140, -1));
 
         jLabel15.setText("Nombre:");
         jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 120, -1, -1));
-        jPanel1.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 140, -1));
+        jPanel1.add(txtDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 140, -1));
 
         jLabel7.setText("DNI:");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 150, -1, -1));
 
-        jButton5.setText("prueba");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 300, -1, -1));
+        jLabel5.setText("N° Pedido:");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 460, -1, -1));
+
+        jLabel16.setText("________");
+        jPanel1.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 460, -1, -1));
+
+        jLabel17.setText("Direccion:");
+        jPanel1.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 150, -1, -1));
+
+        jLabel18.setText("Telefono:");
+        jPanel1.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 120, -1, -1));
+        jPanel1.add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 120, 140, -1));
+        jPanel1.add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 150, 140, -1));
+
+        jLabel19.setText("referencia:");
+        jPanel1.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 180, -1, -1));
+        jPanel1.add(txtReferencia, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 180, 380, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 830, 760));
 
@@ -353,9 +403,9 @@ public class TablaPedidos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void txtNombreClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreClienteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_txtNombreClienteActionPerformed
 
     private void panel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_panel1ActionPerformed
         // TODO add your handling code here:
@@ -378,17 +428,75 @@ public class TablaPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField9ActionPerformed
 
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
-        
+        try {
+            Producto extracion = extracciondecombo();
+            double pre = extracion.getPrecio();
+            txtIDProducto.setText(String.valueOf(extracion.getId()));
+            String textcantidad = jTextField7.getText().trim();
+            int cantidad = 1;
+            if (!textcantidad.isEmpty()) {
+                try {
+                    cantidad = Integer.valueOf(textcantidad);
+                    if (cantidad <= 0) {
+                        cantidad = 1;
+                    }
+                } catch (NumberFormatException e) {
+                    cantidad = 1;
+                }
 
+            } else {
+                jTextField7.setText("1");
+            }
+
+            double total = calcular(pre);
+            jTextField8.setText(String.valueOf(total));
+        } catch (Exception ex) {
+            Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jComboBox3ActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void txtIDProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDProductoActionPerformed
 
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_txtIDProductoActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        try {
 
+        } catch (Exception ex) {
+            Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void clienteCreacionLocal() throws DaoException {
+        Cliente cl = new Cliente();
+        cl.setDni(txtDni.getText());
+        cl.setNombre(txtNombreCliente.getText());
+        clienteService.registrarClienteLocal(cl);
+    }
+
+    private void clienteCreacionDelivery() throws DaoException {
+        Cliente cl = new Cliente();
+        cl.setDni(txtDni.getText());
+        cl.setNombre(txtNombreCliente.getText());
+        cl.setTelefono(txtTelefono.getText());
+        cl.setDireccion(txtDireccion.getText());
+        cl.setReferencia(txtReferencia.getText());
+        clienteService.registrarClienteDelivery(cl);
+    }
+
+    private Producto oredenCreacion() throws DaoException {
+        int id_producto = Integer.valueOf(txtIDProducto.getText());
+        Producto pro = productoService.obtenerPorId(id_producto);
+
+        return pro;
+    }
+
+    private void crear() {
+    }
+
+    private void cargarTabla(Pedido p) {
+
+    }
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
@@ -410,27 +518,13 @@ public class TablaPedidos extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jComboBox3ItemStateChanged
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        try {
-            double pre = extracciondecombo().getPrecio();
-            
-            String textoCantidad = jTextField7.getText().trim();
-            
-            if (textoCantidad.isEmpty()) {
-                throw new NumberFormatException("La cantidad está vacía.");
-            }
-            
-            int cantidad = Integer.parseInt(textoCantidad);
-            
-            if (cantidad <= 0) {
-                throw new NumberFormatException("La cantidad debe ser mayor a 0.");
-            }
-            jTextField6.setText(String.valueOf(extracciondecombo().getId()));
-            jTextField8.setText(String.valueOf(pre * cantidad));
-        } catch (Exception ex) {
-            Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void jTextField8KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField8KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField8KeyReleased
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -471,11 +565,11 @@ public class TablaPedidos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable OrdenTabla;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
@@ -485,9 +579,14 @@ public class TablaPedidos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -495,16 +594,18 @@ public class TablaPedidos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JTextField panel1;
+    private javax.swing.JTextField txtDireccion;
+    private javax.swing.JTextField txtDni;
+    private javax.swing.JTextField txtIDProducto;
+    private javax.swing.JTextField txtNombreCliente;
+    private javax.swing.JTextField txtReferencia;
+    private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 }

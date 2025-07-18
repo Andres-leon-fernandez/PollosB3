@@ -25,7 +25,7 @@ import proyectopolleria.service.Impl.ProveedorServiceImp;
 import proyectopolleria.service.interfaz.InsumoService;
 import proyectopolleria.util.Conexion;
 
-public class TablaProductos extends javax.swing.JFrame {
+public class TablaInsumos extends javax.swing.JFrame {
 
     private ProveedorService proveedorservice;
     private InsumoService insumoService;
@@ -33,7 +33,7 @@ public class TablaProductos extends javax.swing.JFrame {
     private Connection conn;
     private int rowselec;
 
-    public TablaProductos() {
+    public TablaInsumos() {
         initComponents();
         conn = Conexion.getInstancia().getConexion();
         model = (DefaultTableModel) productoTabla.getModel();
@@ -323,7 +323,7 @@ public class TablaProductos extends javax.swing.JFrame {
             cargarTabla();
             limpiar();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaProductos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TablaInsumos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_BtGuardarActionPerformed
 
@@ -338,7 +338,7 @@ public class TablaProductos extends javax.swing.JFrame {
 
             cargarTabla();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaProductos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TablaInsumos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -448,21 +448,23 @@ public class TablaProductos extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TablaProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TablaProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TablaProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TablaProductos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TablaProductos().setVisible(true);
+                new TablaInsumos().setVisible(true);
             }
         });
     }
