@@ -1,5 +1,8 @@
 package proyectopolleria.view;
 
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -17,6 +20,8 @@ import proyectopolleria.service.interfaz.PedidoService;
 import proyectopolleria.service.interfaz.TrabajadorService;
 import proyectopolleria.util.Conexion;
 import java.sql.Connection;
+import javax.swing.JFrame;
+import javax.swing.JTable;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
 import proyectopolleria.model.Cliente;
@@ -40,7 +45,19 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
         pedidoService = new PedidoServiceImpl(new PedidoDaoImpl(conn));
 
         model = (DefaultTableModel) jTable1.getModel();
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         cargarPedidosDesdeBD();
+        jTable1.addMouseListener(new MouseAdapter(){
+            public void mousePressed(MouseEvent mouseEvent){
+                JTable table = (JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                if(mouseEvent.getClickCount() == 1){
+                    llenarDatos();
+                }
+            }
+        });
 
     }
 
@@ -88,7 +105,15 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage());
         }
     }
-
+    private void llenarDatos(){
+        cliente = new Cliente();
+        cliente.setId(Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
+        cliente.setDni(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
+        cliente.setNombre(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString());
+        cliente.setTelefono(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString());
+        cliente.setDireccion(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString());
+        cliente.setReferencia(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString());
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
