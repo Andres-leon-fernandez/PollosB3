@@ -448,7 +448,7 @@ public class TablaCliente extends javax.swing.JFrame {
             cliente.setDireccion(txtDireccion.getText());
             cliente.setReferencia(txtReferencia.getText());
             if(cliente.getId() == null){
-                clienteService.registrarCliente(cliente);
+                clienteService.registrarClienteDelivery(cliente);
             }else{
                 clienteService.actualizarCliente(cliente);
             }

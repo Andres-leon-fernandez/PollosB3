@@ -14,7 +14,9 @@ import proyectopolleria.model.Cliente;
  */
 public interface ClienteService {
 
-    void registrarCliente(Cliente cliente) throws DaoException;
+    void registrarClienteLocal(Cliente cliente) throws DaoException;
+
+    void registrarClienteDelivery(Cliente cliente) throws DaoException;
 
     void actualizarCliente(Cliente cliente) throws DaoException;
 

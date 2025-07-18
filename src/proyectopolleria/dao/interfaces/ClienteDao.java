@@ -14,4 +14,6 @@ import proyectopolleria.model.Cliente;
 public interface ClienteDao extends Dao<Cliente, Integer> {
 
     Cliente obtenerPorDni(String dni) throws DaoException;
+    
+    void crearLocal(Cliente t) throws DaoException;
 }

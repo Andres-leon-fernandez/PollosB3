@@ -49,23 +49,6 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public void registrarCliente(Cliente cliente) throws DaoException {
-        try {
-            ValidarCliente(cliente, false);
-            clienteDao.crear(cliente);
-        } catch (ValidationException ex) {
-            try {
-                throw ex;
-            } catch (ValidationException ex1) {
-                LOGGER.log(Level.SEVERE, null, ex1);
-            }
-        } catch (DaoException ex) {
-            LOGGER.log(Level.SEVERE, "Error en la capa DAO al crear un cliente.", ex);
-            throw ex;
-        }
-    }
-
-    @Override
     public void actualizarCliente(Cliente cliente) throws DaoException {
         try {
             ValidarCliente(cliente, false);
@@ -95,5 +78,27 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public List<Cliente> listarTodos() throws DaoException {
         return clienteDao.listarTodos();
+    }
+
+    @Override
+    public void registrarClienteLocal(Cliente cliente) throws DaoException {
+        clienteDao.crearLocal(cliente);
+    }
+
+    @Override
+    public void registrarClienteDelivery(Cliente cliente) throws DaoException {
+        try {
+            ValidarCliente(cliente, false);
+            clienteDao.crear(cliente);
+        } catch (ValidationException ex) {
+            try {
+                throw ex;
+            } catch (ValidationException ex1) {
+                LOGGER.log(Level.SEVERE, null, ex1);
+            }
+        } catch (DaoException ex) {
+            LOGGER.log(Level.SEVERE, "Error en la capa DAO al crear un cliente.", ex);
+            throw ex;
+        }
     }
 }

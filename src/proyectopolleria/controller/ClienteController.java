@@ -27,7 +27,7 @@ public class ClienteController {
 
     public void registrarCliente(Cliente cli) {
         try {
-            srvCli.registrarCliente(cli);
+            srvCli.registrarClienteDelivery(cli);
         } catch (Exception ex) {
             System.err.println("? Error al actualizar cliente: " + ex.getMessage());
         }
