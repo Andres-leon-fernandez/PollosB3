@@ -23,4 +23,6 @@ public interface PedidoService {
     Pedido obtenerPorId(int id) throws DaoException;
 
     List<Pedido> listarTodos() throws DaoException;
+
+    public Pedido crearPedidoTemporal() throws DaoException;
 }

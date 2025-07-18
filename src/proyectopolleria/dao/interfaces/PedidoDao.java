@@ -4,6 +4,7 @@
  */
 package proyectopolleria.dao.interfaces;
 
+import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Pedido;
 
 /**
@@ -11,5 +12,4 @@ import proyectopolleria.model.Pedido;
  * @author andres
  */
 public interface PedidoDao extends Dao<Pedido, Integer>{
-    
 }

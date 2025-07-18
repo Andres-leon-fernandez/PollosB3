@@ -14,6 +14,7 @@ import proyectopolleria.service.interfaz.OrdenService;
 import proyectopolleria.service.interfaz.ProductoService;
 import proyectopolleria.service.interfaz.TrabajadorService;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import proyectopolleria.dao.Impl.ClienteDaoImpl;
@@ -40,11 +41,11 @@ public class TablaPedidos extends javax.swing.JFrame {
     private ClienteService clienteService;
     private PedidoService pedidoService;
     private Connection conn;
-    private Pedido operacionCompraxd;
+    private Pedido pedidoActual;
 
     public TablaPedidos(String usuario, String fechaHora) {
         initComponents();
-        conn=Conexion.getInstancia().getConexion();
+        conn = Conexion.getInstancia().getConexion();
         model = (DefaultTableModel) OrdenTabla.getModel();
         trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(conn));
         productoService = new ProductoServiceImpl(new ProductoDaoImpl(conn));
@@ -68,6 +69,21 @@ public class TablaPedidos extends javax.swing.JFrame {
                 }
             }
         });
+    }
+
+    private void crearPedidoTemporal() throws DaoException {
+        pedidoActual = pedidoService.crearPedidoTemporal();
+    }
+
+    private void cancelarPedido() {
+        if (pedidoActual != null) {
+            try {
+                pedidoService.eliminarPedido(pedidoActual);
+                dispose(); // Cierra la ventana
+            } catch (DaoException ex) {
+                JOptionPane.showMessageDialog(this, "No se pudo cancelar el pedido.");
+            }
+        }
     }
 
     private void cargarMozosEnComboBox() {
@@ -474,11 +490,20 @@ public class TablaPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIDProductoActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        try {
-            
-        } catch (Exception ex) {
-            Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            List<Orden> ordenes = new ArrayList<>();
+//            Orden o;
+//            o = new Orden(
+//                    Integer.valueOf(txtIDProducto.getText()),
+//                    Integer.valueOf(txtidp.getText()),
+//                    Integer.parseInt(txtCantidad.getText()),
+//                    Double.parseDouble(txtimporte.getText()));
+//            ordenService.registrarOrden(o);
+//            ordenes.add(o);
+//            cargarTabla();
+//        } catch (Exception ex) {
+//            Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void clienteCreacionLocal() throws DaoException {
@@ -514,7 +539,11 @@ public class TablaPedidos extends javax.swing.JFrame {
     }
 
     private void cargarTabla(Pedido p) {
-
+        try {
+            ordenService.listarPorPedido(p.getId());
+        } catch (DaoException ex) {
+            Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
