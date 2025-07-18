@@ -1,31 +1,24 @@
 package proyectopolleria.view;
 
-import java.awt.event.ItemEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import proyectopolleria.controller.ol.GestionDatosPedido;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Orden;
 import proyectopolleria.model.Trabajador;
 import proyectopolleria.service.Impl.ProductoServiceImpl;
 import proyectopolleria.service.interfaz.ClienteService;
 import proyectopolleria.service.interfaz.OrdenService;
-import proyectopolleria.service.interfaz.PedidoService;
 import proyectopolleria.service.interfaz.ProductoService;
 import proyectopolleria.service.interfaz.TrabajadorService;
-import proyectopolleria.util.MenuPolleria;
 import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import proyectopolleria.dao.Impl.ClienteDaoImpl;
 import proyectopolleria.dao.Impl.OrdenDaoImpl;
+import proyectopolleria.dao.Impl.PedidoDaoImpl;
 import proyectopolleria.dao.Impl.ProductoDaoImpl;
 import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
 import proyectopolleria.model.Cliente;
@@ -33,7 +26,9 @@ import proyectopolleria.model.Pedido;
 import proyectopolleria.model.Producto;
 import proyectopolleria.service.Impl.ClienteServiceImpl;
 import proyectopolleria.service.Impl.OrdenServiceImpl;
+import proyectopolleria.service.Impl.PedidoServiceImpl;
 import proyectopolleria.service.Impl.TrabajadorServiceImpl;
+import proyectopolleria.service.interfaz.PedidoService;
 import proyectopolleria.util.Conexion;
 
 public class TablaPedidos extends javax.swing.JFrame {
@@ -43,18 +38,36 @@ public class TablaPedidos extends javax.swing.JFrame {
     private ProductoService productoService;
     private OrdenService ordenService;
     private ClienteService clienteService;
+    private PedidoService pedidoService;
     private Connection conn;
-    private Producto operaciones;
+    private Pedido operacionCompraxd;
 
     public TablaPedidos(String usuario, String fechaHora) {
         initComponents();
+        conn=Conexion.getInstancia().getConexion();
         model = (DefaultTableModel) OrdenTabla.getModel();
         trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(conn));
         productoService = new ProductoServiceImpl(new ProductoDaoImpl(conn));
         ordenService = new OrdenServiceImpl(new OrdenDaoImpl(conn));
         clienteService = new ClienteServiceImpl(new ClienteDaoImpl(conn));
+        pedidoService = new PedidoServiceImpl(new PedidoDaoImpl(conn));
+
+        jTextField1.setText(usuario);
+        jTextField2.setText(fechaHora);
+
         cargarMozosEnComboBox();
         cargarProductosEnComboBox();
+
+        txtPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                try {
+                    txtimporte.setText(String.valueOf(calcular()));
+                } catch (Exception ex) {
+                    Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
 
     private void cargarMozosEnComboBox() {
@@ -95,19 +108,19 @@ public class TablaPedidos extends javax.swing.JFrame {
     }
 
     private Producto extracciondecombo() throws Exception {
-        Producto p = new Producto();
+        Producto p;
         try {
             List<Producto> listaProductos = productoService.listarTodos();
             Object seleccionado = jComboBox3.getSelectedItem();
 
             for (Producto producto : listaProductos) {
-                if (producto.getDescripcion().equals(seleccionado)) {
-                    System.out.println(producto.getDescripcion());
-                    return producto;
+                p = producto;
+                if (p.getDescripcion().equals(seleccionado)) {
+                    System.out.println(p.getDescripcion());
+                    return p;
                 }
             }
 
-            // Si no se encuentra, devuelve null o lanza excepción si prefieres
             return null;
 
         } catch (DaoException e) {
@@ -118,9 +131,10 @@ public class TablaPedidos extends javax.swing.JFrame {
         return null;
     }
 
-    double calcular(double pre) {
+    double calcular() throws Exception {
 
-        int cantidad = Integer.valueOf(jTextField7.getText());
+        double pre = extracciondecombo().getPrecio();
+        int cantidad = Integer.parseInt(txtPrecio.getText());
 
         return pre * cantidad;
     }
@@ -149,8 +163,8 @@ public class TablaPedidos extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txtIDProducto = new javax.swing.JTextField();
         jComboBox3 = new javax.swing.JComboBox<>();
-        jTextField7 = new javax.swing.JTextField();
-        jTextField8 = new javax.swing.JTextField();
+        txtPrecio = new javax.swing.JTextField();
+        txtimporte = new javax.swing.JTextField();
         panel1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         OrdenTabla = new javax.swing.JTable();
@@ -273,22 +287,22 @@ public class TablaPedidos extends javax.swing.JFrame {
         });
         jPanel1.add(jComboBox3, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 320, 190, -1));
 
-        jTextField7.setText("1");
-        jPanel1.add(jTextField7, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 360, 90, -1));
+        txtPrecio.setText("1");
+        jPanel1.add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 360, 90, -1));
 
-        jTextField8.setEditable(false);
-        jTextField8.setBackground(new java.awt.Color(204, 204, 204));
-        jTextField8.addActionListener(new java.awt.event.ActionListener() {
+        txtimporte.setEditable(false);
+        txtimporte.setBackground(new java.awt.Color(204, 204, 204));
+        txtimporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField8ActionPerformed(evt);
+                txtimporteActionPerformed(evt);
             }
         });
-        jTextField8.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtimporte.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextField8KeyReleased(evt);
+                txtimporteKeyReleased(evt);
             }
         });
-        jPanel1.add(jTextField8, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 400, 90, -1));
+        jPanel1.add(txtimporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 400, 90, -1));
 
         panel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Informacion del producto"));
         panel1.addActionListener(new java.awt.event.ActionListener() {
@@ -411,9 +425,9 @@ public class TablaPedidos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_panel1ActionPerformed
 
-    private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
+    private void txtimporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtimporteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField8ActionPerformed
+    }//GEN-LAST:event_txtimporteActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
@@ -432,7 +446,7 @@ public class TablaPedidos extends javax.swing.JFrame {
             Producto extracion = extracciondecombo();
             double pre = extracion.getPrecio();
             txtIDProducto.setText(String.valueOf(extracion.getId()));
-            String textcantidad = jTextField7.getText().trim();
+            String textcantidad = txtPrecio.getText().trim();
             int cantidad = 1;
             if (!textcantidad.isEmpty()) {
                 try {
@@ -445,11 +459,11 @@ public class TablaPedidos extends javax.swing.JFrame {
                 }
 
             } else {
-                jTextField7.setText("1");
+                txtPrecio.setText("1");
             }
 
-            double total = calcular(pre);
-            jTextField8.setText(String.valueOf(total));
+            double total = calcular();
+            txtimporte.setText(String.valueOf(total));
         } catch (Exception ex) {
             Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -461,7 +475,7 @@ public class TablaPedidos extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         try {
-
+            
         } catch (Exception ex) {
             Logger.getLogger(TablaPedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -484,13 +498,18 @@ public class TablaPedidos extends javax.swing.JFrame {
         clienteService.registrarClienteDelivery(cl);
     }
 
-    private Producto oredenCreacion() throws DaoException {
-        int id_producto = Integer.valueOf(txtIDProducto.getText());
-        Producto pro = productoService.obtenerPorId(id_producto);
-
-        return pro;
-    }
-
+//    private Orden oredenCreacion() throws DaoException {
+//        Pedido p1 = new Pedido();
+//        Ped
+//        int id_producto = Integer.valueOf(txtIDProducto.getText());
+//        Producto pro = productoService.obtenerPorId(id_producto);
+//        Orden ord = new Orden();
+//        ord.setIdProducto(pro.getId());
+//        ord.setNombreProducto(pro.getDescripcion());
+//        ord.setSubtotal(pro.getPrecio());
+//        ord.setIdPedido();
+//        return ord;
+//    }
     private void crear() {
     }
 
@@ -518,9 +537,9 @@ public class TablaPedidos extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jComboBox3ItemStateChanged
 
-    private void jTextField8KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField8KeyReleased
+    private void txtimporteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtimporteKeyReleased
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField8KeyReleased
+    }//GEN-LAST:event_txtimporteKeyReleased
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
@@ -597,15 +616,15 @@ public class TablaPedidos extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JTextField panel1;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtDni;
     private javax.swing.JTextField txtIDProducto;
     private javax.swing.JTextField txtNombreCliente;
+    private javax.swing.JTextField txtPrecio;
     private javax.swing.JTextField txtReferencia;
     private javax.swing.JTextField txtTelefono;
+    private javax.swing.JTextField txtimporte;
     // End of variables declaration//GEN-END:variables
 }
