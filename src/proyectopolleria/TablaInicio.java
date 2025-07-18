@@ -17,6 +17,7 @@ public class TablaInicio extends javax.swing.JFrame {
     public TablaInicio() {
 
         initComponents();
+        setLocationRelativeTo(null);
         Connection conn = Conexion.getInstancia().getConexion();
         ctrl = new TrabajadorController(conn);
     }

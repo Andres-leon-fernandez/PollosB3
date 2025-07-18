@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="PollosB3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/poi-ooxml-5.2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/poi-5.2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jcalendar-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/flatlaf-demo-3.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/poi-3.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/poi-5.2.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/poi-ooxml-5.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

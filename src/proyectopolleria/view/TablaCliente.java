@@ -356,11 +356,7 @@ public class TablaCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        ExportExcel ex = new ExportExcel();
-        String mensaje;
-        mensaje = ex.exportJTableToCsv(jTable1, "Reporte_Cliente.xlsx");
-        
-        JOptionPane.showMessageDialog(this, mensaje, "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        ExportExcel.exportarJTableAExcel(jTable1);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

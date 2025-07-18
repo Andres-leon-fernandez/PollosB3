@@ -68,7 +68,7 @@ public class TablaPrincipal extends javax.swing.JFrame {
         jPanel1.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 507, 130, -1));
 
         jLabel3.setFont(new java.awt.Font("Sylfaen", 1, 36)); // NOI18N
-        jLabel3.setText("DORADOS CHICKEN");
+        jLabel3.setText("Pollos B3");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 20, 390, 50));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/proyectopolleria/resourse/img/fondo2.jpg"))); // NOI18N
@@ -213,7 +213,8 @@ public class TablaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        // TODO add your handling code here:
+        TablaCliente tablaCliente = new TablaCliente();
+        tablaCliente.show(true);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed

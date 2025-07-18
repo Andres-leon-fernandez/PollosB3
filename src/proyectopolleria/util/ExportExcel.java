@@ -1,85 +1,69 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyectopolleria.util;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
+import javax.swing.*;
+import javax.swing.table.TableModel;
+import java.io.*;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
- * @author Administrador
+ * @author Sebastian Onofre
  */
 public class ExportExcel {
-    private String getDesktopFolderPath() {
-        String os = System.getProperty("os.name").toLowerCase();
-        String homePath = System.getProperty("user.home");
-
-        if (os.contains("win")) {
-            return "C:\\Users\\LAB-USR-ATE\\Desktop";
-        } 
-        return homePath;
-    }
-
     /**
-     * Exporta los datos de un JTable a un archivo CSV en la carpeta de Descargas.
-     * @param table El JTable a exportar.
-     * @param fileName El nombre del archivo CSV a generar (ej. "datos.csv").
+     * Exporta los datos de un JTable a un archivo Excel (.xlsx)
+     * Abre un di√°logo para que el usuario seleccione d√≥nde guardar el archivo.
+     *
+     * Ejemplo de uso:
+     * ExportExcel.exportarJTableAExcel(miJTable);
+     *
+     * @param table El JTable que contiene los datos a exportar
      */
-    public String exportJTableToCsv(JTable table, String fileName) {
-        String downloadsPath = getDesktopFolderPath();
-        File outputFile = new File(downloadsPath, fileName);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
-            // Escribir los encabezados de las columnas
-            for (int i = 0; i < table.getColumnCount(); i++) {
-                writer.write(escapeCsv(table.getColumnName(i)));
-                if (i < table.getColumnCount() - 1) {
-                    writer.write(","); // Delimitador de columnas
+    public static void exportarJTableAExcel(JTable table) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Guardar archivo Excel");
+        fileChooser.setSelectedFile(new File("datos.xlsx"));
+
+        int userSelection = fileChooser.showSaveDialog(null);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File archivo = fileChooser.getSelectedFile();
+
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Datos");
+
+                TableModel model = table.getModel();
+
+                // Escribir encabezados
+                Row headerRow = sheet.createRow(0);
+                for (int col = 0; col < model.getColumnCount(); col++) {
+                    Cell cell = headerRow.createCell(col);
+                    cell.setCellValue(model.getColumnName(col));
                 }
-            }
-            writer.newLine(); // Nueva lÌnea despuÈs de los encabezados
 
-            // Escribir los datos de las filas
-            for (int rows = 0; rows < table.getRowCount(); rows++) {
-                for (int cols = 0; cols < table.getColumnCount(); cols++) {
-                    Object value = table.getValueAt(rows, cols);
-                    String cellValue = (value != null) ? value.toString() : "";
-                    writer.write(escapeCsv(cellValue)); // Escapar el valor para CSV
-                    if (cols < table.getColumnCount() - 1) {
-                        writer.write(","); // Delimitador de columnas
+                // Escribir datos
+                for (int row = 0; row < model.getRowCount(); row++) {
+                    Row excelRow = sheet.createRow(row + 1);
+                    for (int col = 0; col < model.getColumnCount(); col++) {
+                        Cell cell = excelRow.createCell(col);
+                        Object value = model.getValueAt(row, col);
+                        cell.setCellValue(value != null ? value.toString() : "");
                     }
                 }
-                writer.newLine(); // Nueva lÌnea despuÈs de cada fila
+
+                // Guardar archivo
+                try (FileOutputStream out = new FileOutputStream(archivo)) {
+                    workbook.write(out);
+                    JOptionPane.showMessageDialog(null, "Archivo guardado exitosamente.");
+                }
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error al guardar el archivo: " + e.getMessage());
             }
-
-            return "Reporte CSV generado exitosamente en: " + outputFile.getAbsolutePath();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return "Error al generar el archivo CSV: " + ex.getMessage();
         }
     }
 
-    /**
-     * Escapa un valor de cadena para ser utilizado en un archivo CSV.
-     * Esto maneja comas, comillas dobles y saltos de lÌnea dentro de un valor.
-     * @param value La cadena a escapar.
-     * @return La cadena escapada.
-     */
-    private String escapeCsv(String value) {
-        if (value == null) {
-            return "";
-        }
-        String escapedValue = value.replace("\"", "\"\""); // Escapar comillas dobles
-        if (escapedValue.contains(",") || escapedValue.contains("\"") || escapedValue.contains("\n") || escapedValue.contains("\r")) {
-            return "\"" + escapedValue + "\""; // Entrecomillar si contiene delimitadores o comillas
-        }
-        return escapedValue;
-    }
 }
