@@ -330,6 +330,7 @@ public class TablaCliente extends javax.swing.JFrame {
             enabled(false);
             btnSave.setText("Editar");
             btnDelete.setText("Eliminar");
+            flagEditar = "0";
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -342,6 +343,7 @@ public class TablaCliente extends javax.swing.JFrame {
             eliminarCliente();
         }else{
             flagEditar = "0";
+             enabled(false);
             btnSave.setText("Editar");
             btnDelete.setText("Eliminar");
         }

@@ -26,7 +26,8 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
     }
 
     final String insert = "INSERT INTO trabajador(password, dni, nombre, correo,telefono,tipo,usuario) VALUES (?, ?, ?, ?, ?,?,?)";
-    final String update = "UPDATE trabajador SET password = ?, correo = ?, telefono = ?, tipo = ? WHERE id = ?";
+    final String update = "UPDATE trabajador SET password = ?, correo = ?, telefono = ?, tipo = ?, dni = ? WHERE id = ?";
+    final String update_data = "UPDATE trabajador SET dni = ?, correo = ?, telefono = ?, tipo = ? WHERE id = ?";
     final String delete = "delete from trabajador where id=?";
     final String selectAll = "SELECT id, usuario, dni, nombre, correo, telefono, activo, tipo, disponible FROM trabajador";
     final String selectId = "select * from trabajador where id=?";
@@ -77,12 +78,24 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
     public void modificar(Trabajador t) throws DaoException {
         PreparedStatement stat = null;
         try {
-            stat = conn.prepareStatement(update);
-            stat.setString(1, t.getPassword());
-            stat.setString(2, t.getCorreo());
-            stat.setString(3, t.getTelefono());
-            stat.setString(4, t.getTipoTrabajador().name());
-            stat.setInt(5, t.getId());
+            if(t.getPassword() == null || "".equals(t.getPassword())){
+                stat = conn.prepareStatement(update_data);
+                stat.setString(1, t.getDni());
+                stat.setString(2, t.getCorreo());
+                stat.setString(3, t.getTelefono());
+                stat.setString(4, t.getTipoTrabajador().name());
+                stat.setInt(5, t.getId());
+            }else{
+                stat = conn.prepareStatement(update);
+                stat.setString(1, t.getPassword());
+                stat.setString(2, t.getCorreo());
+                stat.setString(3, t.getTelefono());
+                stat.setString(4, t.getTipoTrabajador().name());
+                stat.setString(5, t.getDni());
+                stat.setInt(6, t.getId());
+            }
+            
+            
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("puede que no se actualizo xd");
             }
