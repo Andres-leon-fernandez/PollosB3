@@ -1,8 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyectopolleria.controller;
+
+import proyectopolleria.dao.DaoException;
+import proyectopolleria.model.Pedido;
+import proyectopolleria.service.interfaz.PedidoService;
 
 /**
  *
@@ -10,4 +10,14 @@ package proyectopolleria.controller;
  */
 public class PedidoController {
     
+    private PedidoService pedidoService;
+    
+    public void eliminarPedido(Pedido pedido) {
+        try {
+            pedidoService.eliminarPedido(pedido);
+            System.out.println("?? Pedido eliminado.");
+        } catch (DaoException e) {
+            System.err.println("? Error al eliminar trabajador: " + e.getMessage());
+        }
+    }
 }

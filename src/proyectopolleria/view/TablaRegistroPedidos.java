@@ -20,6 +20,8 @@ import proyectopolleria.service.interfaz.PedidoService;
 import proyectopolleria.service.interfaz.TrabajadorService;
 import proyectopolleria.util.Conexion;
 import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import proyectopolleria.dao.DaoException;
@@ -27,6 +29,7 @@ import proyectopolleria.dao.Impl.TrabajadorDaoImpl;
 import proyectopolleria.model.Cliente;
 import proyectopolleria.model.Trabajador;
 import proyectopolleria.service.Impl.TrabajadorServiceImpl;
+import proyectopolleria.util.ExportExcel;
 
 public class TablaRegistroPedidos extends javax.swing.JFrame {
 
@@ -34,6 +37,7 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
     private TrabajadorService trabajadorService;
     private PedidoService pedidoService;
     private DefaultTableModel model;
+    private Pedido pedido;
 
     public TablaRegistroPedidos() {
         initComponents();
@@ -48,12 +52,12 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         cargarPedidosDesdeBD();
-        jTable1.addMouseListener(new MouseAdapter(){
-            public void mousePressed(MouseEvent mouseEvent){
+        jTable1.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
                 JTable table = (JTable) mouseEvent.getSource();
                 Point point = mouseEvent.getPoint();
                 int row = table.rowAtPoint(point);
-                if(mouseEvent.getClickCount() == 1){
+                if (mouseEvent.getClickCount() == 1) {
                     llenarDatos();
                 }
             }
@@ -105,7 +109,8 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage());
         }
     }
-    private void llenarDatos(){
+
+    private void llenarDatos() {
         Cliente cliente = new Cliente();
         cliente.setId(Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
         cliente.setDni(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
@@ -127,7 +132,7 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
         jButton3 = new javax.swing.JToggleButton();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -187,6 +192,16 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
 
         jLabel2.setText("Ingrese N° Pedido:");
 
+        jButton2.setBackground(new java.awt.Color(238, 156, 32));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("Generar Reporte");
+        jButton2.setBorderPainted(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -195,20 +210,20 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(65, 65, 65)
+                        .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 574, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 753, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -221,26 +236,14 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Pedidos", jPanel1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 766, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Detalle Pedido", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -256,19 +259,46 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // Botón de buscar
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ExportExcel.exportarJTableAExcel(jTable1);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            obtenerIdEliminar();
+            pedidoService.eliminarPedido(pedido);
+            model.setRowCount(0);
+            cargarPedidosDesdeBD();
+        } catch (DaoException ex) {
+            Logger.getLogger(TablaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void obtenerIdEliminar(){
+        pedido = new Pedido();
+        pedido.setId(Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
+    }
+    
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String textoBuscado = jTextField1.getText().trim();
+        if (textoBuscado.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa un valor para buscar.", "Campo vacío", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < jTable1.getRowCount(); i++) {
+            String valorEnTabla = jTable1.getValueAt(i, 0).toString();
+            if (valorEnTabla.equalsIgnoreCase(textoBuscado)) {
+                jTable1.setRowSelectionInterval(i, i);
+                jTable1.scrollRectToVisible(jTable1.getCellRect(i, 0, true));
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(this, "No se encontraron coincidencias.", "Búsqueda", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Botón de eliminar registro
-
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -315,11 +345,11 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JToggleButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
