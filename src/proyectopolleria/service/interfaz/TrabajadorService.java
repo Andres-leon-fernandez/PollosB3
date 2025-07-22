@@ -33,4 +33,8 @@ public interface TrabajadorService {
     public List<Trabajador> listarMozos() throws DaoException;
     
     public void eliminarDni(String dni) throws DaoException;
+
+    public List<Trabajador> listarDeliveryDisponible() throws DaoException;
+
+    public List<Trabajador> listarMozoDisponible() throws DaoException;
 }

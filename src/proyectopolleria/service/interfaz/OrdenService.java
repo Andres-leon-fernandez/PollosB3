@@ -27,4 +27,7 @@ public interface OrdenService {
     List<Orden> listarPorPedido(int pedidoId) throws DaoException;
 
     public String obtenerOrdenesPorPedido(int pedidoId) throws DaoException;
+
+    boolean validarInsumosDisponiblesPorOrden(int idProductom, int cantidad) throws DaoException;
+
 }

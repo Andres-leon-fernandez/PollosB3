@@ -15,5 +15,9 @@ public interface TrabajadorDao extends Dao<Trabajador, Integer> {
     public List<Trabajador> listarMozos() throws DaoException;
 
     void eliminarDni(String dni) throws DaoException;
+
+    public List<Trabajador> listarDeliveryDisponible() throws DaoException;
+
+    public List<Trabajador> listarMozoDisponible() throws DaoException;
     
 }

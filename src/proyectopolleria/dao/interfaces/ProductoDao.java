@@ -4,6 +4,7 @@
  */
 package proyectopolleria.dao.interfaces;
 
+import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Producto;
 
 /**
@@ -11,5 +12,5 @@ import proyectopolleria.model.Producto;
  * @author andres
  */
 public interface ProductoDao extends Dao<Producto, Integer>{
-    
+    String nombreProductoById(int id) throws DaoException;
 }

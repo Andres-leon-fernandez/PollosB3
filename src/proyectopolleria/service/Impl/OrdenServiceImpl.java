@@ -25,16 +25,21 @@ public class OrdenServiceImpl implements OrdenService {
     @Override
     public void registrarOrden(Orden o) throws DaoException {
         dao.crear(o);
+        dao.actualizarInsumosByOrden(o.getId(), "1");
+        dao.actualizarTotalPedido(o.getIdPedido());
     }
 
     @Override
     public void actualizarOrden(Orden o) throws DaoException {
         dao.modificar(o);
+        dao.actualizarTotalPedido(o.getIdPedido());
     }
 
     @Override
     public void eliminarOrden(Orden o) throws DaoException {
         dao.eliminar(o);
+        dao.actualizarInsumosByOrden(o.getId(), "0");
+        dao.actualizarTotalPedido(o.getIdPedido());
     }
 
     @Override
@@ -73,6 +78,11 @@ public class OrdenServiceImpl implements OrdenService {
         }
 
         return descripcion.toString();
+    }
+
+    @Override
+    public boolean validarInsumosDisponiblesPorOrden(int idProducto, int cantidad) throws DaoException {
+        return dao.validarInsumosDisponiblesPorOrden(idProducto, cantidad);
     }
 
 }

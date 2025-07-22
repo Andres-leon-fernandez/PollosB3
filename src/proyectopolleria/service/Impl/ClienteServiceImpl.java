@@ -101,4 +101,14 @@ public class ClienteServiceImpl implements ClienteService {
             throw ex;
         }
     }
+
+    @Override
+    public Cliente buscarClientePorDocumento(String documento) throws DaoException {
+        try {
+            return clienteDao.obtenerPorDni(documento);
+        } catch (DaoException ex) {
+            LOGGER.log(Level.SEVERE, "Error en la capa DAO al crear un cliente.", ex);
+            throw ex;
+        }
+    }
 }

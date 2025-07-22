@@ -23,6 +23,8 @@ public interface ClienteService {
     void eliminarCliente(Cliente cliente) throws DaoException;
 
     Cliente obtenerPorId(int id) throws DaoException;
+    
+    Cliente buscarClientePorDocumento(String documento) throws DaoException;
 
     List<Cliente> listarTodos() throws DaoException;
 }

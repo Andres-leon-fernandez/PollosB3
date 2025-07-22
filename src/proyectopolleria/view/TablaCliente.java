@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package proyectopolleria.view;
 
 import com.sun.jdi.connect.spi.Connection;
@@ -11,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -60,9 +57,9 @@ public class TablaCliente extends javax.swing.JFrame {
         cliente.setId(Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
         cliente.setDni(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
         cliente.setNombre(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString());
-        cliente.setTelefono(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString());
-        cliente.setDireccion(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString());
-        cliente.setReferencia(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString());
+        cliente.setTelefono(Objects.toString(jTable1.getValueAt(jTable1.getSelectedRow(), 3), ""));
+        cliente.setDireccion(Objects.toString(jTable1.getValueAt(jTable1.getSelectedRow(), 4), ""));
+        cliente.setReferencia(Objects.toString(jTable1.getValueAt(jTable1.getSelectedRow(), 5), ""));
         
         txtxDni.setText(cliente.getDni());
         txtNombre.setText(cliente.getNombre());

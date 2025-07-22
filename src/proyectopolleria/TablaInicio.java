@@ -1,6 +1,7 @@
 package proyectopolleria;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import proyectopolleria.controller.TrabajadorController;
@@ -23,6 +24,10 @@ public class TablaInicio extends javax.swing.JFrame {
     }
 
     private void ingresarActionPerformed(java.awt.event.ActionEvent evt) {
+        ingresar();
+    }
+
+    private void ingresar() {
         String u = jTextField1.getText();
         String p = new String(jPasswordField1.getPassword());
         Trabajador t = ctrl.login(u, p);
@@ -34,7 +39,6 @@ public class TablaInicio extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Credenciales inválidas");
         }
-
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -111,10 +115,20 @@ public class TablaInicio extends javax.swing.JFrame {
                 jTextField1ActionPerformed(evt);
             }
         });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
 
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField1ActionPerformed(evt);
+            }
+        });
+        jPasswordField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPasswordField1KeyPressed(evt);
             }
         });
 
@@ -214,6 +228,18 @@ public class TablaInicio extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         System.exit(0);         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jPasswordField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            ingresar();
+        }
+    }//GEN-LAST:event_jPasswordField1KeyPressed
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            ingresar();
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
 
     /**
      * @param args the command line arguments

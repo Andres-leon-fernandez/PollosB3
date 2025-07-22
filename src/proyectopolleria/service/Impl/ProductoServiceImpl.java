@@ -38,4 +38,9 @@ public class ProductoServiceImpl implements ProductoService{
     public List<Producto> listarTodos() throws DaoException {
         return dao.listarTodos();
     }
+
+    @Override
+    public String nombreProductoById(int id) throws DaoException {
+        return dao.nombreProductoById(id);
+    }
 }

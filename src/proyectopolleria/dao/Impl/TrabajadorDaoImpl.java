@@ -354,4 +354,42 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
             throw new DaoException("Error al eliminar por DNI", ex);
         }
     }
+
+    @Override
+    public List<Trabajador> listarDeliveryDisponible() throws DaoException {
+        List<Trabajador> list = new ArrayList<>();
+        String sql = "SELECT id, nombre FROM trabajador WHERE tipo = ?";
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, Trabajador.TipoTrabajador.DELIVERY.toString());
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Trabajador t = new Trabajador();
+                t.setId(rs.getInt("id"));
+                t.setNombre(rs.getString("nombre"));
+                list.add(t);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error listando de delivery", e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Trabajador> listarMozoDisponible() throws DaoException {
+        List<Trabajador> list = new ArrayList<>();
+        String sql = "SELECT id, nombre FROM trabajador WHERE tipo = ?";
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, Trabajador.TipoTrabajador.MOZO.toString());
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Trabajador t = new Trabajador();
+                t.setId(rs.getInt("id"));
+                t.setNombre(rs.getString("nombre"));
+                list.add(t);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error listando de mozos", e);
+        }
+        return list;
+    }
 }

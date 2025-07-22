@@ -195,4 +195,23 @@ public class ProductoDaoImpl implements ProductoDao {
         return p;
     }
 
+    @Override
+    public String nombreProductoById(int id) throws DaoException {
+        String sql = "SELECT p.descripcion "
+                + "  FROM producto p "
+                + " WHERE p.id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) {
+                    return rs.getString("descripcion");
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException("Error al obtener las ordenes del pedido", e);
+        }
+        return "";
+    }
+
 }

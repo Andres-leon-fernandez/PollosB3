@@ -67,8 +67,18 @@
             return dao.listarMozos();
         }
 
-    @Override
-    public void eliminarDni(String dni) throws DaoException {
-        dao.eliminarDni(dni);
-    }
+        @Override
+        public void eliminarDni(String dni) throws DaoException {
+            dao.eliminarDni(dni);
+        }
+
+        @Override
+        public List<Trabajador> listarDeliveryDisponible() throws DaoException{
+            return dao.listarDeliveryDisponible();
+        }
+
+        @Override
+        public List<Trabajador> listarMozoDisponible() throws DaoException{
+            return dao.listarMozoDisponible();
+        }
     }

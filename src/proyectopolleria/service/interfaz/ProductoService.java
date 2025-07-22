@@ -23,4 +23,6 @@ public interface ProductoService {
     Producto obtenerPorId(int id) throws DaoException;
 
     List<Producto> listarTodos() throws DaoException;
+    
+    String nombreProductoById(int id) throws DaoException;
 }
