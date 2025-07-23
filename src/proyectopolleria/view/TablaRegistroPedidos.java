@@ -423,9 +423,9 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
         txtDireccion.setRows(5);
         jScrollPane2.setViewportView(txtDireccion);
 
-        jLabel7.setText("Direccion:");
+        jLabel7.setText("Dirección:");
 
-        jLabel12.setText("Telefono:");
+        jLabel12.setText("Teléfono:");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -488,7 +488,10 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
 
         jButton4.setText("Ver Pedido");
 
+        jButton5.setBackground(new java.awt.Color(40, 120, 220));
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("Imprimir Boleta");
+        jButton5.setBorderPainted(false);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -715,6 +718,7 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             obtenerIdEliminar();
+            ordenService.eliminarOrdenesPorPedido(pedido.getId());
             pedidoService.eliminarPedido(pedido);
             model.setRowCount(0);
             cargarPedidosDesdeBD();
@@ -824,6 +828,20 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void obtenerMontoTotal() {
+        double total = 0.0;
+        for (int i = 0; i < jTable2.getRowCount(); i++) {
+            Object valor = jTable2.getValueAt(i, 3);
+            if (valor != null && valor instanceof Number) {
+                total += ((Number) valor).doubleValue();
+            } else {
+                try {
+                    total += Double.parseDouble(valor.toString());
+                } catch (Exception e) {
+                    
+                }
+            }
+        }
+        txtTotal.setText(String.format("%.2f", total));
 
     }
 
@@ -1045,6 +1063,7 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
         txtxCliente.setText("");
         txtTelefono.setText("");
         txtDireccion.setText("");
+        txtTotal.setText("");
 
         // Limpiar ComboBoxes - Establecer seleccion por defecto
         jComboBox1.setSelectedIndex(0); // ComboBox Mozo
@@ -1054,6 +1073,7 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
 
         // Restablecer el JSpinner a su valor inicial
         jSpinner1.setValue(jSpinner1.getModel().getPreviousValue());
+        modelDetalle.setRowCount(0);
     }
 
     private void actualizarCamposTipoPedido() {

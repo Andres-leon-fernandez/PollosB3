@@ -85,4 +85,9 @@ public class OrdenServiceImpl implements OrdenService {
         return dao.validarInsumosDisponiblesPorOrden(idProducto, cantidad);
     }
 
+    @Override
+    public void eliminarOrdenesPorPedido(int pedidoId) throws DaoException {
+       dao.eliminarOrdenesPorPedido(pedidoId);
+    }
+
 }

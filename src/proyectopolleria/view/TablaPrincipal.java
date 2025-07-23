@@ -23,15 +23,12 @@ public class TablaPrincipal extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
 
@@ -72,14 +69,6 @@ public class TablaPrincipal extends javax.swing.JFrame {
 
         jMenu1.setText("Pedido");
 
-        jMenuItem1.setText("Registrar pedido");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem1);
-
         jMenuItem8.setText("Registro de pedidos");
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,17 +77,9 @@ public class TablaPrincipal extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem8);
 
-        jMenuItem7.setText("Registro de ordenes");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem7);
-
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Productos");
+        jMenu2.setText("Inventario");
 
         jMenuItem3.setText("Stock");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -110,9 +91,9 @@ public class TablaPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("Personal");
+        jMenu3.setText("Mantenimiento");
 
-        jMenuItem5.setText("Agregar/Eliminar");
+        jMenuItem5.setText("Personal");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem5ActionPerformed(evt);
@@ -120,20 +101,15 @@ public class TablaPrincipal extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem5);
 
-        jMenuBar1.add(jMenu3);
-
-        jMenu5.setText("Cliente");
-        jMenu5.setToolTipText("");
-
-        jMenuItem6.setText("Consultar");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem9.setText("Cliente");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                jMenuItem9ActionPerformed(evt);
             }
         });
-        jMenu5.add(jMenuItem6);
+        jMenu3.add(jMenuItem9);
 
-        jMenuBar1.add(jMenu5);
+        jMenuBar1.add(jMenu3);
 
         jMenu6.setText("Usuarios");
 
@@ -163,20 +139,6 @@ public class TablaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-    //Obten fecha y hora
-    java.util.Date fecha = new java.util.Date();
-    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-    String fechaHora = sdf.format(fecha);
-
-    // Obtén el texto del JTextField
-    String textoTextField1 = jTextField1.getText();
-
-    // Utiliza el texto del JTextField al crear la instancia de TablaPedidos
-    TablaPedidos tablaPedidos = new TablaPedidos(textoTextField1, fechaHora);
-    tablaPedidos.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
     TablaPersonal tablaPersonal = new TablaPersonal();
     tablaPersonal.setVisible(true);
@@ -191,24 +153,19 @@ public class TablaPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-            TablaRegistroPedidos tablaRegistro = new TablaRegistroPedidos();
-            tablaRegistro.setVisible(true);
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
-
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-            TablaOrdenes tablaOrdenes = new TablaOrdenes();
-            tablaOrdenes.setVisible(true);
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
-
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        TablaCliente tablaCliente = new TablaCliente();
-        tablaCliente.show(true);
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
-
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        TablaRegistroPedidos tablaRegistro = new TablaRegistroPedidos();
+        tablaRegistro.setVisible(true);
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        TablaCliente tablaCliente = new TablaCliente();
+        tablaCliente.show(true);
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -253,17 +210,14 @@ public class TablaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

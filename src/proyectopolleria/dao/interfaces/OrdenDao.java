@@ -19,5 +19,5 @@ public interface OrdenDao extends Dao<Orden, Integer> {
     boolean validarInsumosDisponiblesPorOrden(int idProducto, int cantidad) throws DaoException;
     void actualizarInsumosByOrden(int idOrden, String tipo) throws DaoException;
     void actualizarTotalPedido(int idPedido) throws DaoException;
-
+    public void eliminarOrdenesPorPedido(int pedidoId) throws DaoException;
 }
