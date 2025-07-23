@@ -4,13 +4,19 @@
  */
 package proyectopolleria.view;
 
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import proyectopolleria.service.interfaz.ProductoService;
 import proyectopolleria.service.interfaz.ProveedorService;
 import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.dao.Impl.InsumoDaoImpl;
@@ -39,9 +45,48 @@ public class TablaInsumos extends javax.swing.JFrame {
         model = (DefaultTableModel) productoTabla.getModel();
         insumoService = new InsumoServiceImpl(new InsumoDaoImpl(conn));
         proveedorservice = new ProveedorServiceImp(new ProveedorDaoImpl(conn));
+
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
         cargarTabla();
         mostrarTipoCombo();
         mostrarProveedorCb();
+
+        productoTabla.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+                JTable table = (JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                if (mouseEvent.getClickCount() == 1) {
+                    llenarDatos();
+                }
+            }
+        });
+    }
+
+    private void llenarDatos() {
+        Insumo insInter = new Insumo();
+        Proveedor provinter = new Proveedor();
+        insInter.setId(Integer.valueOf(productoTabla.getValueAt(productoTabla.getSelectedRow(), 0).toString()));
+        insInter.setNombre(String.valueOf(productoTabla.getValueAt(productoTabla.getSelectedRow(), 1).toString()));
+        insInter.setStock(Double.parseDouble(productoTabla.getValueAt(productoTabla.getSelectedRow(), 2).toString()));
+        insInter.setStockMin(Double.parseDouble(productoTabla.getValueAt(productoTabla.getSelectedRow(), 3).toString()));
+        insInter.setUnidad(Insumo.Unidad.valueOf(productoTabla.getValueAt(productoTabla.getSelectedRow(), 4).toString()));
+        insInter.setPrecioUnitario(Double.parseDouble(productoTabla.getValueAt(productoTabla.getSelectedRow(), 5).toString()));
+
+        provinter.setNombre(String.valueOf(productoTabla.getValueAt(productoTabla.getSelectedRow(), 6).toString()));
+        provinter.setRuc(String.valueOf(productoTabla.getValueAt(productoTabla.getSelectedRow(), 7).toString()));
+        provinter.setCorreo(String.valueOf(productoTabla.getValueAt(productoTabla.getSelectedRow(), 8).toString()));
+        provinter.setDireccion(String.valueOf(productoTabla.getValueAt(productoTabla.getSelectedRow(), 9).toString()));
+
+        txtNombre.setText(insInter.getNombre());
+        txtStockActual.setText(String.valueOf(insInter.getStock()));
+        txtStockMin.setText(String.valueOf(insInter.getStockMin()));
+        txtPrecioU.setText(String.valueOf(insInter.getPrecioUnitario()));
+
+        CbUnidad.setSelectedItem(insInter.getUnidad());
+        cbProveedor.setSelectedItem(provinter.getNombre());
+
     }
 
     private Proveedor extraerDatosProveedor() throws DaoException {
@@ -65,9 +110,8 @@ public class TablaInsumos extends javax.swing.JFrame {
         ins.setNombre(txtNombre.getText());
         ins.setStock(Double.parseDouble(txtStockActual.getText()));
         ins.setStockMin(Double.parseDouble(txtStockMin.getText()));
-
-        String uni = CbUnidad.getSelectedItem().toString();
-        ins.setUnidad(Insumo.Unidad.valueOf(uni));
+        ins.setPrecioUnitario(Double.parseDouble(txtPrecioU.getText()));
+        ins.setUnidad((Insumo.Unidad) CbUnidad.getSelectedItem());
 
         Proveedor p = extraerDatosProveedor();
         if (p == null) {
@@ -155,6 +199,12 @@ public class TablaInsumos extends javax.swing.JFrame {
 
         jLabel4.setText("Precio Unitario");
 
+        CbUnidad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CbUnidadActionPerformed(evt);
+            }
+        });
+
         jLabel5.setText("Unidad:");
 
         jLabel6.setText("Proveedor:");
@@ -179,6 +229,11 @@ public class TablaInsumos extends javax.swing.JFrame {
         });
 
         jButton3.setText("Actualizar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -346,6 +401,20 @@ public class TablaInsumos extends javax.swing.JFrame {
         rowselec = productoTabla.rowAtPoint(evt.getPoint());
     }//GEN-LAST:event_productoTablaMouseClicked
 
+    private void CbUnidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbUnidadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CbUnidadActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        try {
+            actualiazarPorFila();
+            limpiar();
+            cargarTabla();
+        } catch (DaoException ex) {
+            Logger.getLogger(TablaInsumos.class.getName()).log(Level.SEVERE, null, ex);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     private void limpiar() {
         txtNombre.setText("");
         txtStockActual.setText("");
@@ -382,17 +451,12 @@ public class TablaInsumos extends javax.swing.JFrame {
     }
 
     private void mostrarTipoCombo() {
+        CbUnidad.setModel(new DefaultComboBoxModel<>(Insumo.Unidad.values()));
 
-        CbUnidad.removeAllItems();
-
-        CbUnidad.addItem("Seleccione una Unidad");
-        CbUnidad.addItem("KG");
-        CbUnidad.addItem("LITROS");
-        CbUnidad.addItem("MINILITROS");
-        CbUnidad.addItem("GRAMOS");
     }
 
     private void mostrarProveedorCb() {
+
         try {
             List<Proveedor> Proveedores = proveedorservice.listarTodos();
 
@@ -411,18 +475,43 @@ public class TablaInsumos extends javax.swing.JFrame {
         }
     }
 
+    private void actualiazarPorFila() throws DaoException {
+        int locacion = rowselec;
+        if (locacion < 0 || locacion >= productoTabla.getRowCount()) {
+            JOptionPane.showMessageDialog(this, "Selecciona una fila válida para actualizar.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int id = (int) productoTabla.getValueAt(locacion, 0);
+
+        // Obtener insumo actualizado
+        Insumo insumoActualizado = new Insumo();
+        insumoActualizado.setId(id);
+        insumoActualizado.setNombre(txtNombre.getText());
+        insumoActualizado.setStock(Double.parseDouble(txtStockActual.getText()));
+        insumoActualizado.setStockMin(Double.parseDouble(txtStockMin.getText()));
+        insumoActualizado.setPrecioUnitario(Double.parseDouble(txtPrecioU.getText()));
+        insumoActualizado.setUnidad((Insumo.Unidad) CbUnidad.getSelectedItem());
+
+        // Obtener proveedor
+        Proveedor proveedor = extraerDatosProveedor();
+        if (proveedor == null) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un proveedor válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        insumoActualizado.setIdProveedor(proveedor.getId());
+
+        // Actualizar insumo en la base de datos
+        insumoService.actualizarInsumo(insumoActualizado);
+        JOptionPane.showMessageDialog(this, "¡Insumo actualizado con éxito!");
+    }
+
     private void eliminarPorFila() throws DaoException {
         int locacion = rowselec;
-
-        // Validación de selección de fila
         if (locacion < 0 || locacion >= productoTabla.getRowCount()) {
             throw new DaoException("Fila seleccionada inválida.");
         }
-
-        // Obtener ID del insumo desde la columna 0
         int id_local = (int) productoTabla.getValueAt(locacion, 0);
-
-        // Obtener objeto desde servicio y eliminar
         Insumo insumoAEliminar = insumoService.obtenerPorId(id_local);
         if (insumoAEliminar != null) {
             insumoService.eliminarInsumo(insumoAEliminar);
@@ -471,7 +560,7 @@ public class TablaInsumos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtGuardar;
-    private javax.swing.JComboBox<String> CbUnidad;
+    private javax.swing.JComboBox<Insumo.Unidad> CbUnidad;
     private javax.swing.JComboBox<String> cbProveedor;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;

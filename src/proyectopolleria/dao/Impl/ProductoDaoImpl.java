@@ -13,11 +13,11 @@ import java.util.ArrayList;
 
 public class ProductoDaoImpl implements ProductoDao {
 
-    final String insert = "INSERT INTO producto(nombre, ruc, telefono, direccion,correo) VALUES (?, ?, ?, ?, ?)";
-    final String update = "UPDATE producto SET telefono = ?, direccion = ?, correo = ? WHERE id = ?";
-    final String delete = "delete from producto where id=?";
-    final String selectAll = "select * from producto";
-    final String selectId = "select * from producto where id=?";
+    final String insert = "INSERT INTO producto(descripcion, precio, categoria, activo) VALUES (?, ?, ?, ?)";
+    final String update = "UPDATE producto SET descripcion = ?, precio = ?, categoria = ?, activo = ? WHERE id = ?";
+    final String delete = "DELETE FROM producto WHERE id=?";
+    final String selectAll = "SELECT * FROM producto";
+    final String selectId = "SELECT * FROM producto WHERE id=?";
 
     private Connection conn;
 
@@ -38,11 +38,9 @@ public class ProductoDaoImpl implements ProductoDao {
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("Pueed que no se guardo xd");
             }
-            rs = stat.executeQuery();
+            rs = stat.getGeneratedKeys(); // ? obtener las llaves generadas
             if (rs.next()) {
                 t.setId(rs.getInt(1));
-            } else {
-                throw new DaoException("error xd");
             }
         } catch (SQLException ex) {
             throw new DaoException("error xd", ex);
@@ -117,11 +115,11 @@ public class ProductoDaoImpl implements ProductoDao {
     private Producto convertidor(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String descripcion = rs.getString("descripcion");
-        double ruc = rs.getDouble("precio");
-        String telefono = rs.getString("categoria");
+        double precio = rs.getDouble("precio");
+        String categoria = rs.getString("categoria");
         boolean activo = rs.getBoolean("activo");
 
-        Producto producto = new Producto(id, descripcion, ruc, telefono, activo);
+        Producto producto = new Producto(id, descripcion, precio, categoria, activo);
         producto.setId(rs.getInt("id"));
         return producto;
     }
@@ -203,7 +201,7 @@ public class ProductoDaoImpl implements ProductoDao {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()) {
+                if (rs.next()) {
                     return rs.getString("descripcion");
                 }
             }

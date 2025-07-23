@@ -3,9 +3,15 @@ package proyectopolleria.model;
 public class Insumo {
 
     public enum Unidad {
-        KG,
-        LITROS,
-        UNIDADES
+        KILOGRAMOS, // Para carnes, papas, etc.
+        LITROS, // Para aceites, bebidas, salsas líquidas, etc.
+        UNIDADES, // Para huevos, limones, panes, etc.
+        GRAMOS, // Para especias, harinas en pequeñas cantidades, etc.
+        MILILITROS, // Para aderezos o esencias en pequeñas cantidades.
+        ATADOS, // Para hierbas aromáticas como el orégano o el culantro.
+        SACOS, // Para papas, arroz, carbón, etc. en grandes volúmenes.
+        BOTELLAS, // Para gaseosas, cervezas, licores, etc.
+        PORCIONES
     }
 
     private Integer id;

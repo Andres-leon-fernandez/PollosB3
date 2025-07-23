@@ -20,7 +20,7 @@ public class InsumoDaoImpl implements InsumoDao {
     }
 
     final String insert = "INSERT INTO insumo(nombre, stock, stock_min, unidad,precio_unitario,proveedor_id) VALUES (?, ?, ?, ?, ?,?)";
-    final String update = "UPDATE insumo SET stock = ?, stock_min = ?, precio_unitario = ? proveedor_id = ?";
+    final String update = "UPDATE insumo SET nombre=?, stock=?, stock_min=?, unidad=?, precio_unitario=?, proveedor_id=? WHERE id=?";
     final String delete = "delete from insumo where id=?";
     final String selectAll = "select * from insumo";
     final String selectId = "select * from insumo where id=?";

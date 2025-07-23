@@ -4,6 +4,7 @@ import java.util.List;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.dao.interfaces.RecetaDao;
 import proyectopolleria.model.Receta;
+import proyectopolleria.model.RecetaInsumo;
 import proyectopolleria.service.interfaz.RecetaService;
 
 public class RecetaServiceImpl implements RecetaService {
@@ -38,5 +39,7 @@ public class RecetaServiceImpl implements RecetaService {
     public List<Receta> listarRecetas() throws DaoException {
         return dao.listarTodos();
     }
+
+    
 
 }

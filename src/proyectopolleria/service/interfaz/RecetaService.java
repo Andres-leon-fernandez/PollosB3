@@ -7,6 +7,7 @@ package proyectopolleria.service.interfaz;
 import java.util.List;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Receta;
+import proyectopolleria.model.RecetaInsumo;
 
 /**
  *
@@ -23,4 +24,5 @@ public interface RecetaService {
     Receta obtenerRecetaPorId(Integer idReceta) throws DaoException;
 
     List<Receta> listarRecetas() throws DaoException;
+
 }
