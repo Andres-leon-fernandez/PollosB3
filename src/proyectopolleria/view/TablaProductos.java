@@ -490,7 +490,11 @@ public class TablaProductos extends javax.swing.JFrame {
             Producto producto = new Producto();
             producto.setDescripcion(txtNombreProductos.getText());
             producto.setPrecio(Double.parseDouble(TxtPrecioProducto.getText()));
-            producto.setCategoria(cbcategoria.getName());
+            
+            
+            String categoria=cbTipoProducto.getSelectedItem().toString();
+            System.out.println(categoria);
+            producto.setCategoria(categoria);
             producto.setActivo(cbDisponibilidad.getSelectedItem().equals("Disponible"));
 
             // 2. Registrar el producto en la base de datos
