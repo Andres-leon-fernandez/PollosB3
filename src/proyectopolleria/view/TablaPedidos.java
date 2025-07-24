@@ -426,7 +426,7 @@ public class TablaPedidos extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 830, 760));
 
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/proyectopolleria/resourse/img/imagen.png"))); // NOI18N
+        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/proyectopolleria/resources/img/imagen.png"))); // NOI18N
         jLabel14.setText("jLabel14");
         getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 860, 780));
 

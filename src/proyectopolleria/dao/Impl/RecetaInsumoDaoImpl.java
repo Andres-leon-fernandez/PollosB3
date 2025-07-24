@@ -4,6 +4,7 @@ import proyectopolleria.dao.interfaces.RecetaInsumoDAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import proyectopolleria.DTO.DetalleInsumoDTO;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Insumo;
 import proyectopolleria.model.RecetaInsumo;
@@ -50,6 +51,45 @@ public class RecetaInsumoDaoImpl implements RecetaInsumoDAO {
         } catch (SQLException e) {
             throw new DaoException("Error al obtener insumos de receta", e);
         }
+        return lista;
+    }
+
+    @Override
+    public List<DetalleInsumoDTO> listarInsumosConProveedorPorProducto(int idProducto) throws DaoException {
+        List<DetalleInsumoDTO> lista = new ArrayList<>();
+
+        String sql = """
+                SELECT 
+                    i.id AS id_insumo,
+                    i.nombre AS nombre_insumo,
+                    ri.cantidad AS cantidad_usar,
+                    p.ruc AS ruc_proveedor,
+                    p.nombre AS nombre_proveedor
+                FROM receta_insumo ri
+                JOIN insumo i ON ri.insumo_id = i.id
+                JOIN proveedor p ON i.proveedor_id = p.id
+                JOIN receta r ON ri.receta_id = r.id
+                JOIN producto pr ON r.producto_id = pr.id
+                WHERE pr.id = ?
+        """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idProducto);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                DetalleInsumoDTO dto = new DetalleInsumoDTO(
+                        rs.getInt("id_insumo"),
+                        rs.getString("nombre_insumo"),
+                        rs.getDouble("cantidad_usar"),
+                        rs.getString("ruc_proveedor"),
+                        rs.getString("nombre_proveedor")
+                );
+                lista.add(dto);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error al listar detalle de insumos con proveedor", e);
+        }
+
         return lista;
     }
 }

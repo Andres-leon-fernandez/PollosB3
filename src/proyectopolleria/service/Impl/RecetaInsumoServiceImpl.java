@@ -5,6 +5,7 @@
 package proyectopolleria.service.Impl;
 
 import java.util.List;
+import proyectopolleria.DTO.DetalleInsumoDTO;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.dao.interfaces.RecetaInsumoDAO;
 import proyectopolleria.model.RecetaInsumo;
@@ -30,5 +31,10 @@ public class RecetaInsumoServiceImpl implements RecetaInsumoService {
     @Override
     public void agregarInsumoAReceta(RecetaInsumo recetaInsumo) throws DaoException {
         recetaInsumoDao.insertarInsumoEnReceta(recetaInsumo);
+    }
+
+    @Override
+    public List<DetalleInsumoDTO> listarInsumosConProveedorPorProducto(int idProducto) throws DaoException {
+        return recetaInsumoDao.listarInsumosConProveedorPorProducto(idProducto);
     }
 }

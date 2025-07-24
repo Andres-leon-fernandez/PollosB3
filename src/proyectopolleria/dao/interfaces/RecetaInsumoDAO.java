@@ -5,6 +5,7 @@
 package proyectopolleria.dao.interfaces;
 
 import java.util.List;
+import proyectopolleria.DTO.DetalleInsumoDTO;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.RecetaInsumo;
 
@@ -17,4 +18,6 @@ public interface RecetaInsumoDAO {
     void insertarInsumoEnReceta(RecetaInsumo recetaInsumo) throws DaoException;
 
     List<RecetaInsumo> obtenerInsumosDeReceta(int idReceta) throws DaoException;
+
+    public List<DetalleInsumoDTO> listarInsumosConProveedorPorProducto(int idProducto) throws DaoException;
 }

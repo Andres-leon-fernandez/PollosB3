@@ -38,7 +38,7 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
         ResultSet rs = null;
         try {
             stat = conn.prepareStatement(insert, stat.RETURN_GENERATED_KEYS);
-            stat.setString(1, Sha256.sha256(t.getPassword()));
+            stat.setString(1, t.getPassword());
             stat.setString(2, t.getDni());
             stat.setString(3, t.getNombre());
             stat.setString(4, t.getCorreo());
@@ -78,14 +78,14 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
     public void modificar(Trabajador t) throws DaoException {
         PreparedStatement stat = null;
         try {
-            if(t.getPassword() == null || "".equals(t.getPassword())){
+            if (t.getPassword() == null || "".equals(t.getPassword())) {
                 stat = conn.prepareStatement(update_data);
                 stat.setString(1, t.getDni());
                 stat.setString(2, t.getCorreo());
                 stat.setString(3, t.getTelefono());
                 stat.setString(4, t.getTipoTrabajador().name());
                 stat.setInt(5, t.getId());
-            }else{
+            } else {
                 stat = conn.prepareStatement(update);
                 stat.setString(1, t.getPassword());
                 stat.setString(2, t.getCorreo());
@@ -94,8 +94,7 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
                 stat.setString(5, t.getDni());
                 stat.setInt(6, t.getId());
             }
-            
-            
+
             if (stat.executeUpdate() == 0) {
                 throw new DaoException("puede que no se actualizo xd");
             }
@@ -284,11 +283,17 @@ public class TrabajadorDaoImpl implements TrabajadorDao {
     @Override
     public Trabajador login(String usuario, String password) throws DaoException {
         String sql = "SELECT * FROM trabajador WHERE usuario=? AND password=?";
+        System.out.println("Query final: usuario=" + usuario + ", passwordHash=" + Sha256.sha256(password));
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, usuario);
-            st.setString(2, password);
+            System.out.println(usuario);
+            st.setString(2, Sha256.sha256(password));
+            System.out.println(password);
+            System.out.println(Sha256.sha256(password));
+            System.out.println("Query final: usuario=" + usuario + ", passwordHash=" + Sha256.sha256(password));
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
+                    System.out.println("Login exitoso");
                     return convertidorLogin(rs);
                 }
             }

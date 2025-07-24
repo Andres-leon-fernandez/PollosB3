@@ -12,6 +12,7 @@ import proyectopolleria.service.Impl.TrabajadorServiceImpl;
 import proyectopolleria.service.interfaz.TrabajadorService;
 import proyectopolleria.util.Conexion;
 import java.sql.Connection;
+import javax.swing.JFrame;
 
 public class TablaUsuario extends javax.swing.JFrame {
 
@@ -20,6 +21,12 @@ public class TablaUsuario extends javax.swing.JFrame {
     private Connection conn;
 
     private void cargarUsuariosDesdeBD() {
+        
+        
+        
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        
         try {
             List<Trabajador> mozos = trabajadorService.listarUsuarios();
             for (Trabajador mozo : mozos) {

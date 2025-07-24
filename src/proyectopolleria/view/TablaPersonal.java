@@ -23,16 +23,17 @@ import javax.swing.JTable;
 import proyectopolleria.dao.DaoException;
 import proyectopolleria.model.Trabajador.TipoTrabajador;
 import proyectopolleria.util.ExportExcel;
+import proyectopolleria.util.Sha256;
 
 public class TablaPersonal extends javax.swing.JFrame {
-
+    
     private ArbolBusquedaBinaria arbolMozos;
     private DefaultTableModel model;
     private TrabajadorService trabajadorService;
     private String flagEditar = "0";
     private Connection conn;
     private Trabajador trabajador;
-
+    
     public TablaPersonal() {
         initComponents();
         setLocationRelativeTo(null);
@@ -41,18 +42,18 @@ public class TablaPersonal extends javax.swing.JFrame {
         model = (DefaultTableModel) jTable1.getModel();
         trabajadorService = new TrabajadorServiceImpl(new TrabajadorDaoImpl(Conexion.getInstancia().getConexion()));
         cargarMozosDesdeBD();
-        jTable1.addMouseListener(new MouseAdapter(){
-            public void mousePressed(MouseEvent mouseEvent){
+        jTable1.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
                 JTable table = (JTable) mouseEvent.getSource();
                 Point point = mouseEvent.getPoint();
                 int row = table.rowAtPoint(point);
-                if(mouseEvent.getClickCount() == 1){
+                if (mouseEvent.getClickCount() == 1) {
                     llenarDatos();
                 }
             }
         });
     }
-
+    
     private void cargarMozosDesdeBD() {
         try {
             List<Trabajador> Trabajadores = trabajadorService.listarTodos();
@@ -72,21 +73,21 @@ public class TablaPersonal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error cargando mozos desde BD: " + e.getMessage());
         }
     }
-
+    
     private void limpiarCampos() {
         textName.setText("");
         txtCorreo.setText("");
         txtDni.setText("");
     }
-
+    
     private boolean validarLetras(String texto) {
         return texto.matches("[a-zA-Z]+");
     }
-
+    
     private boolean validarDNI(String dni) {
         return dni.matches("\\d{8}");
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -397,12 +398,12 @@ public class TablaPersonal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDniActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        if(flagEditar == "0"){
+        if (flagEditar == "0") {
             btnSave.setText("Guardar");
             btnDelete.setText("Cancelar");
             flagEditar = "1";
             enabled(true);
-        }else{
+        } else {
             guardarTrabajador();
             enabled(false);
             btnSave.setText("Editar");
@@ -412,9 +413,9 @@ public class TablaPersonal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        if(flagEditar == "0"){
+        if (flagEditar == "0") {
             eliminarTrabajador();
-        }else{
+        } else {
             flagEditar = "0";
             btnSave.setText("Editar");
             btnDelete.setText("Eliminar");
@@ -468,8 +469,8 @@ public class TablaPersonal extends javax.swing.JFrame {
             }
         });
     }
-
-    public void enabled(boolean valor){
+    
+    public void enabled(boolean valor) {
         txtDni.setEnabled(valor);
         textName.setEnabled(valor);
         txtTelefono.setEnabled(valor);
@@ -478,7 +479,7 @@ public class TablaPersonal extends javax.swing.JFrame {
         getTipo.setEnabled(valor);
     }
     
-    private void limpiarDatos(){
+    private void limpiarDatos() {
         trabajador = new Trabajador();
         txtDni.setText("");
         textName.setText("");
@@ -488,7 +489,7 @@ public class TablaPersonal extends javax.swing.JFrame {
         getTipo.setSelectedItem(null);
     }
     
-    private void llenarDatos(){
+    private void llenarDatos() {
         trabajador = new Trabajador();
         trabajador.setId(Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
         trabajador.setUser(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
@@ -507,30 +508,61 @@ public class TablaPersonal extends javax.swing.JFrame {
         enabled(false);
     }
     
-    private void guardarTrabajador(){
+    private void guardarTrabajador() {
         try {
-            trabajador.setDni(txtDni.getText());
-            trabajador.setNombre(textName.getText());
-            trabajador.setTelefono(txtTelefono.getText());
-            trabajador.setCorreo(txtCorreo.getText());
-            trabajador.setTipoTrabajador(TipoTrabajador.valueOf(getTipo.getSelectedItem().toString().toUpperCase()));
-            if(txtPassword.getText() != null && txtPassword.getText() != ""){
-                trabajador.setPassword(txtPassword.getText());
-            }
-            if(trabajador.getId() == null){
-                trabajadorService.registrarTrabajador(trabajador);
-            }else{
+            String dni = txtDni.getText();
+            String nombre = textName.getText();
+            String telefono = txtTelefono.getText();
+            String correo = txtCorreo.getText();
+            String password = String.valueOf(txtPassword.getPassword());
+            TipoTrabajador tipo = TipoTrabajador.valueOf(getTipo.getSelectedItem().toString().toUpperCase());
+            
+            if (trabajador.getId() == null) {
+                // Crear un nuevo trabajador usando el constructor que genera el user y encripta la contraseña
+                Trabajador nuevoTrabajador = new Trabajador(password, dni, nombre, correo, telefono, tipo);
+                trabajadorService.registrarTrabajador(nuevoTrabajador);
+            } else {
+                // Actualización: debes decidir si se permite actualizar el password
+                trabajador.setDni(dni);
+                trabajador.setNombre(nombre);
+                trabajador.setCorreo(correo);
+                trabajador.setTelefono(telefono);
+                trabajador.setTipoTrabajador(tipo);
+                if (!password.isBlank()) {
+                    trabajador.setPassword(Sha256.sha256(password));
+                }
                 trabajadorService.actualizarTrabajador(trabajador);
             }
+            
             model.setRowCount(0);
             cargarMozosDesdeBD();
-            //llenarDatos();
         } catch (DaoException ex) {
             Logger.getLogger(TablaCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+//        try {
+//            trabajador.setDni(txtDni.getText());
+//            trabajador.setNombre(textName.getText());
+//            trabajador.setTelefono(txtTelefono.getText());
+//            trabajador.setCorreo(txtCorreo.getText());
+//            trabajador.setTipoTrabajador(TipoTrabajador.valueOf(getTipo.getSelectedItem().toString().toUpperCase()));
+//            if (String.valueOf(txtPassword.getPassword()) != null && !"".equals(String.valueOf(txtPassword.getPassword()))) {
+//                trabajador.setPassword(String.valueOf(txtPassword.getPassword()));
+//            }
+//            if (trabajador.getId() == null) {
+//                trabajadorService.registrarTrabajador(trabajador);
+//            } else {
+//                trabajadorService.actualizarTrabajador(trabajador);
+//            }
+//            model.setRowCount(0);
+//            cargarMozosDesdeBD();
+//            //llenarDatos();
+//        } catch (DaoException ex) {
+//            Logger.getLogger(TablaCliente.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
     
-    private void eliminarTrabajador(){
+    private void eliminarTrabajador() {
         try {
             trabajadorService.eliminarTrabajador(trabajador);
             model.setRowCount(0);
@@ -540,7 +572,7 @@ public class TablaPersonal extends javax.swing.JFrame {
             Logger.getLogger(TablaCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSave;

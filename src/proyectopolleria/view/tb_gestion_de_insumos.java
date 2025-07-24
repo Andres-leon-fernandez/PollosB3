@@ -31,7 +31,7 @@ import proyectopolleria.service.Impl.ProveedorServiceImp;
 import proyectopolleria.service.interfaz.InsumoService;
 import proyectopolleria.util.Conexion;
 
-public class TablaInsumos extends javax.swing.JFrame {
+public class tb_gestion_de_insumos extends javax.swing.JFrame {
 
     private ProveedorService proveedorservice;
     private InsumoService insumoService;
@@ -39,8 +39,10 @@ public class TablaInsumos extends javax.swing.JFrame {
     private Connection conn;
     private int rowselec;
 
-    public TablaInsumos() {
+    public tb_gestion_de_insumos() {
         initComponents();
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         conn = Conexion.getInstancia().getConexion();
         model = (DefaultTableModel) productoTabla.getModel();
         insumoService = new InsumoServiceImpl(new InsumoDaoImpl(conn));
@@ -156,6 +158,7 @@ public class TablaInsumos extends javax.swing.JFrame {
         BtGuardar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
 
         jScrollPane1.setViewportView(jTree1);
 
@@ -330,6 +333,10 @@ public class TablaInsumos extends javax.swing.JFrame {
 
         CbUnidad.getAccessibleContext().setAccessibleName("");
 
+        jLabel7.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel7.setText("Gestion de Insumos");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -343,11 +350,17 @@ public class TablaInsumos extends javax.swing.JFrame {
                         .addGap(45, 45, 45)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(15, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel7)
+                .addGap(243, 243, 243))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(49, Short.MAX_VALUE)
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -378,7 +391,7 @@ public class TablaInsumos extends javax.swing.JFrame {
             cargarTabla();
             limpiar();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaInsumos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(tb_gestion_de_insumos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_BtGuardarActionPerformed
 
@@ -393,7 +406,7 @@ public class TablaInsumos extends javax.swing.JFrame {
 
             cargarTabla();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaInsumos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(tb_gestion_de_insumos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -411,8 +424,8 @@ public class TablaInsumos extends javax.swing.JFrame {
             limpiar();
             cargarTabla();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaInsumos.class.getName()).log(Level.SEVERE, null, ex);
-        }        // TODO add your handling code here:
+            Logger.getLogger(tb_gestion_de_insumos.class.getName()).log(Level.SEVERE, null, ex);
+        }        // TODO add your handling code here:        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void limpiar() {
@@ -537,14 +550,26 @@ public class TablaInsumos extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_gestion_de_insumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_gestion_de_insumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_gestion_de_insumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TablaInsumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_gestion_de_insumos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -553,7 +578,7 @@ public class TablaInsumos extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TablaInsumos().setVisible(true);
+                new tb_gestion_de_insumos().setVisible(true);
             }
         });
     }
@@ -570,6 +595,7 @@ public class TablaInsumos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

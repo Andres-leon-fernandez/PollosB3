@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import proyectopolleria.dao.DaoException;
@@ -15,15 +16,17 @@ import proyectopolleria.dao.interfaces.ProveedorDao;
 import proyectopolleria.model.Proveedor;
 import proyectopolleria.util.Conexion;
 
-public class TablaProveedores extends javax.swing.JFrame {
+public class tb_proveedores extends javax.swing.JFrame {
 
     private ProveedorService srvproveedor;
     private DaoManagerImpl managerDao;
     private Connection conn;
     private DefaultTableModel model;
 
-    public TablaProveedores() {
+    public tb_proveedores() {
         initComponents();
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         model = (DefaultTableModel) ProveedorTabla.getModel();
         conn = Conexion.getInstancia().getConexion();
         managerDao = new DaoManagerImpl(conn);
@@ -292,7 +295,7 @@ public class TablaProveedores extends javax.swing.JFrame {
             model.setRowCount(0);
             cargarTabla();
         } catch (DaoException ex) {
-            Logger.getLogger(TablaProveedores.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(tb_proveedores.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -335,7 +338,7 @@ public class TablaProveedores extends javax.swing.JFrame {
                     mensaje,
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(TablaProveedores.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(tb_proveedores.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -356,14 +359,26 @@ public class TablaProveedores extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TablaProveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tb_proveedores.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -372,7 +387,7 @@ public class TablaProveedores extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TablaProveedores().setVisible(true);
+                new tb_proveedores().setVisible(true);
             }
         });
     }
