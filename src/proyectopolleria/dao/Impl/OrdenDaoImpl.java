@@ -44,10 +44,10 @@ public class OrdenDaoImpl implements OrdenDao {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al listar ordenes del pedido: " + e.getMessage(), 
-                "Error de Base de Datos", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error al listar ordenes del pedido: " + e.getMessage(),
+                    "Error de Base de Datos",
+                    JOptionPane.ERROR_MESSAGE);
             throw new DaoException("Error al listar ordenes por pedido", e);
         }
         return lista;
@@ -62,10 +62,10 @@ public class OrdenDaoImpl implements OrdenDao {
             stat.setDouble(4, o.getSubtotal());
 
             if (stat.executeUpdate() == 0) {
-                JOptionPane.showMessageDialog(null, 
-                    "No se pudo registrar la orden", 
-                    "Error de Registro", 
-                    JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "No se pudo registrar la orden",
+                        "Error de Registro",
+                        JOptionPane.ERROR_MESSAGE);
                 throw new DaoException("No se pudo insertar la orden");
             }
 
@@ -75,10 +75,10 @@ public class OrdenDaoImpl implements OrdenDao {
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al registrar la orden: " + e.getMessage(), 
-                "Error de Base de Datos", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error al registrar la orden: " + e.getMessage(),
+                    "Error de Base de Datos",
+                    JOptionPane.ERROR_MESSAGE);
             throw new DaoException("Error al insertar orden", e);
         }
     }
@@ -93,16 +93,16 @@ public class OrdenDaoImpl implements OrdenDao {
         try (PreparedStatement stat = conn.prepareStatement(DELETE)) {
             stat.setInt(1, t.getId());
             if (stat.executeUpdate() == 0) {
-                JOptionPane.showMessageDialog(null, 
-                    "No se encontró la orden para eliminar", 
-                    "Error de Eliminación", 
-                    JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "No se encontró la orden para eliminar",
+                        "Error de Eliminación",
+                        JOptionPane.WARNING_MESSAGE);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al eliminar la orden: " + e.getMessage(), 
-                "Error de Base de Datos", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error al eliminar la orden: " + e.getMessage(),
+                    "Error de Base de Datos",
+                    JOptionPane.ERROR_MESSAGE);
             throw new DaoException("Error al eliminar orden", e);
         }
     }
@@ -120,16 +120,15 @@ public class OrdenDaoImpl implements OrdenDao {
     @Override
     public List<Orden> listarTodos() throws DaoException {
         List<Orden> lista = new ArrayList<>();
-        try (PreparedStatement stat = conn.prepareStatement(SELECT_ALL); 
-             ResultSet rs = stat.executeQuery()) {
+        try (PreparedStatement stat = conn.prepareStatement(SELECT_ALL); ResultSet rs = stat.executeQuery()) {
             while (rs.next()) {
                 lista.add(convertir(rs));
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al listar las órdenes: " + e.getMessage(), 
-                "Error de Base de Datos", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error al listar las órdenes: " + e.getMessage(),
+                    "Error de Base de Datos",
+                    JOptionPane.ERROR_MESSAGE);
             throw new DaoException("Error al listar ordenes", e);
         }
         return lista;
@@ -203,8 +202,8 @@ public class OrdenDaoImpl implements OrdenDao {
             stmt.setInt(1, cantidad);
             stmt.setInt(2, idProducto);
             try (ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()) {
-                    return rs.getInt("cantidad")  == 1;
+                if (rs.next()) {
+                    return rs.getInt("cantidad") == 1;
                 }
             }
 
@@ -216,31 +215,45 @@ public class OrdenDaoImpl implements OrdenDao {
 
     @Override
     public void actualizarInsumosByOrden(int idOrden, String tipo) throws DaoException {
-        String sql = "UPDATE insumo i " +
-                "SET i.stock = (SELECT CASE WHEN '1' = ? THEN  " +
-                "      i.stock - (ri.cantidad * o.cantidad)  " +
-                "       ELSE  " +
-                "      i.stock + (ri.cantidad * o.cantidad) END resultado " +
-                "     FROM orden o  " +
-                "                 JOIN receta r " +
-                "                   ON r.producto_id = o.producto_id " +
-                "     JOIN receta_insumo ri " +
-                "       ON ri.receta_id = r.id " +
-                "    WHERE o.id = 2) " +
-                "WHERE i.id = (SELECT ri.insumo_id " +
-                "    FROM orden o  " +
-                "                JOIN receta r " +
-                "                  ON r.producto_id = o.producto_id " +
-                "    JOIN receta_insumo ri " +
-                "      ON ri.receta_id = r.id " +
-                "      WHERE o.id = ?)";
-        try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, tipo);
-            stat.setInt(2, idOrden);
-            stat.executeUpdate();
+        int identificador;
+        String sql_1 = "SELECT ri.insumo_id      "
+                + "FROM orden o                   "
+                + "JOIN receta r                    "
+                + "ON r.producto_id = o.producto_id      "
+                + "JOIN receta_insumo ri        "
+                + "ON ri.receta_id = r.id        "
+                + "WHERE o.id = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql_1)) {
+            stat.setInt(1, idOrden);
+            try (ResultSet rs = stat.executeQuery()) {
+                while (rs.next()) {
+                    identificador = rs.getInt("insumo_id");
+                    String sql = "UPDATE insumo i "
+                            + "SET i.stock = (SELECT CASE WHEN '1' = ? THEN  "
+                            + "      i.stock - (ri.cantidad * o.cantidad)  "
+                            + "       ELSE  "
+                            + "      i.stock + (ri.cantidad * o.cantidad) END resultado "
+                            + "     FROM orden o  "
+                            + "                 JOIN receta r "
+                            + "                   ON r.producto_id = o.producto_id "
+                            + "     JOIN receta_insumo ri "
+                            + "       ON ri.receta_id = r.id "
+                            + "    WHERE o.id = ? AND ri.insumo_id = i.id) "
+                            + "WHERE i.id = ?";
+                    try (PreparedStatement stat1 = conn.prepareStatement(sql)) {
+                        stat1.setString(1, tipo);
+                        stat1.setInt(2, idOrden);
+                        stat1.setInt(3, identificador);
+                        stat1.executeUpdate();
+                    } catch (SQLException e) {
+                        throw new DaoException("Error al modificar el insumo: " + e.getMessage(), e);
+                    }
+                }
+            }
         } catch (SQLException e) {
             throw new DaoException("Error al modificar el insumo: " + e.getMessage(), e);
         }
+
     }
 
     public void actualizarTotalPedido(int pedidoId) throws DaoException {
@@ -252,16 +265,16 @@ public class OrdenDaoImpl implements OrdenDao {
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, pedidoId);
             if (stat.executeUpdate() == 0) {
-                JOptionPane.showMessageDialog(null, 
-                    "No se pudo actualizar el total del pedido", 
-                    "Error de Actualización", 
-                    JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        "No se pudo actualizar el total del pedido",
+                        "Error de Actualización",
+                        JOptionPane.WARNING_MESSAGE);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al actualizar el total del pedido: " + e.getMessage(), 
-                "Error de Base de Datos", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Error al actualizar el total del pedido: " + e.getMessage(),
+                    "Error de Base de Datos",
+                    JOptionPane.ERROR_MESSAGE);
             throw new DaoException("Error al actualizar el monto total del pedido", e);
         }
     }

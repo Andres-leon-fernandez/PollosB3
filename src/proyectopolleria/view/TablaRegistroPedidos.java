@@ -790,7 +790,9 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
             }
             orden = new Orden();
             orden.setIdProducto(productoSeleccionado.getId());
+            System.out.println(productoSeleccionado.getId());
             orden.setCantidad(cantidad);
+            System.out.println(cantidad);
             orden.setSubtotal(productoSeleccionado.getPrecio() * cantidad);
 
             if (pedido == null || pedido.getId() == null) {
@@ -825,7 +827,7 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
             obtenerMontoTotal();
         } catch (DaoException ex) {
             JOptionPane.showMessageDialog(this,
-                    "Error al registrar la orden: " + ex.getMessage(),
+                    "Error al registrar la orden: " + ex,
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(TablaRegistroPedidos.class.getName()).log(Level.SEVERE, null, ex);
@@ -843,7 +845,7 @@ public class TablaRegistroPedidos extends javax.swing.JFrame {
                 try {
                     total += Double.parseDouble(valor.toString());
                 } catch (Exception e) {
-                    
+
                 }
             }
         }

@@ -138,7 +138,7 @@ public class tb_creacion_de_productos extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "no se permite eso xd");
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "error xd: " + ex);
+            System.out.println("error minimo xdddd");
         }
     }
 
